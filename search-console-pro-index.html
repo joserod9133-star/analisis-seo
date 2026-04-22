@@ -557,14 +557,27 @@
           </div>
           <div>
             <label style="display: block; margin-bottom: 0.5rem; font-size: 0.85rem; color: #cbd5e1;">Período</label>
-            <select id="dateRange" onchange="loadData()">
+            <select id="dateRange" onchange="toggleCustomDates()">
               <option value="7">Últimos 7 días</option>
               <option value="30" selected>Últimos 30 días</option>
               <option value="90">Últimos 90 días</option>
               <option value="180">Últimos 6 meses</option>
               <option value="365">Últimos 12 meses</option>
               <option value="480">Últimos 16 meses</option>
+              <option value="custom">📅 Personalizado</option>
             </select>
+          </div>
+          <div id="customDates" class="hidden" style="grid-column: span 2;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div>
+                <label style="display: block; margin-bottom: 0.5rem; font-size: 0.85rem; color: #cbd5e1;">Desde</label>
+                <input type="date" id="startDate" style="padding: 0.75rem;">
+              </div>
+              <div>
+                <label style="display: block; margin-bottom: 0.5rem; font-size: 0.85rem; color: #cbd5e1;">Hasta</label>
+                <input type="date" id="endDate" style="padding: 0.75rem;">
+              </div>
+            </div>
           </div>
           <div>
             <label style="display: block; margin-bottom: 0.5rem; font-size: 0.85rem; color: #cbd5e1;">Comparar con</label>
@@ -640,6 +653,7 @@
             <button class="tab active" onclick="switchTab('overview')">📊 General</button>
             <button class="tab" onclick="switchTab('keywords')">🔍 Keywords</button>
             <button class="tab" onclick="switchTab('urls')">🌐 URLs</button>
+            <button class="tab" onclick="switchTab('positions')">📍 Por Posición</button>
             <button class="tab" onclick="switchTab('opportunities')">💎 Oportunidades</button>
           </div>
 
@@ -710,6 +724,83 @@
             </div>
 
             <div class="pagination" id="urlsPagination"></div>
+          </div>
+
+          <!-- Positions Tab -->
+          <div id="tab-positions" class="hidden">
+            <h3 style="margin-bottom: 1.5rem; font-size: 1.2rem;">📍 Análisis por Rango de Posición</h3>
+            
+            <div class="alert alert-info">
+              <span>ℹ️</span>
+              <div>
+                <strong>Distribución de keywords:</strong> Ve cómo se distribuyen tus keywords por rangos de posición.
+              </div>
+            </div>
+
+            <div class="stats-grid">
+              <div class="stat-card green">
+                <div class="stat-label">Posición 1-3 (Top 3)</div>
+                <div class="stat-value" style="color: #22c55e;" id="pos1-3Count">0</div>
+                <div style="font-size: 0.85rem; color: #94a3b8; margin-top: 0.5rem;" id="pos1-3Clicks">0 clics</div>
+              </div>
+              <div class="stat-card blue">
+                <div class="stat-label">Posición 4-10</div>
+                <div class="stat-value" style="color: #06b6d4;" id="pos4-10Count">0</div>
+                <div style="font-size: 0.85rem; color: #94a3b8; margin-top: 0.5rem;" id="pos4-10Clicks">0 clics</div>
+              </div>
+              <div class="stat-card purple">
+                <div class="stat-label">Posición 11-20</div>
+                <div class="stat-value" style="color: #a855f7;" id="pos11-20Count">0</div>
+                <div style="font-size: 0.85rem; color: #94a3b8; margin-top: 0.5rem;" id="pos11-20Clicks">0 clics</div>
+              </div>
+              <div class="stat-card orange">
+                <div class="stat-label">Posición 21+</div>
+                <div class="stat-value" style="color: #fb923c;" id="pos21Count">0</div>
+                <div style="font-size: 0.85rem; color: #94a3b8; margin-top: 0.5rem;" id="pos21Clicks">0 clics</div>
+              </div>
+            </div>
+
+            <h3 style="margin: 2rem 0 1rem; font-size: 1.1rem;">🎯 Low Hanging Fruit (Posición 4-10)</h3>
+            <div class="alert alert-warning">
+              <span>⚡</span>
+              <div>
+                <strong>Fácil de mejorar:</strong> Estas keywords están cerca del top 3. Con optimización podrías duplicar tu tráfico.
+              </div>
+            </div>
+
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Keyword</th>
+                    <th>Posición Actual</th>
+                    <th>Clics Actuales</th>
+                    <th>Impresiones</th>
+                    <th>CTR Actual</th>
+                    <th>Potencial Top 3</th>
+                    <th>Ganancia</th>
+                  </tr>
+                </thead>
+                <tbody id="lowHangingDetailTable"></tbody>
+              </table>
+            </div>
+
+            <h3 style="margin: 2rem 0 1rem; font-size: 1.1rem;">📈 Próximas al Top 10 (Posición 11-20)</h3>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Keyword</th>
+                    <th>Posición Actual</th>
+                    <th>Clics</th>
+                    <th>Impresiones</th>
+                    <th>CTR</th>
+                    <th>Potencial Top 10</th>
+                  </tr>
+                </thead>
+                <tbody id="pos11-20Table"></tbody>
+              </table>
+            </div>
           </div>
 
           <!-- Opportunities Tab -->
@@ -812,6 +903,25 @@
       document.getElementById('setup').classList.remove('hidden');
     }
 
+    function toggleCustomDates() {
+      const dateRange = document.getElementById('dateRange').value;
+      const customDates = document.getElementById('customDates');
+      
+      if (dateRange === 'custom') {
+        customDates.classList.remove('hidden');
+        // Set default dates
+        const endDate = new Date();
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - 30);
+        
+        document.getElementById('endDate').valueAsDate = endDate;
+        document.getElementById('startDate').valueAsDate = startDate;
+      } else {
+        customDates.classList.add('hidden');
+        loadData();
+      }
+    }
+
     async function loadSites() {
       try {
         showLoading(true);
@@ -845,7 +955,7 @@
 
     async function loadData() {
       const site = document.getElementById('siteSelect').value;
-      const days = parseInt(document.getElementById('dateRange').value);
+      const dateRangeSelect = document.getElementById('dateRange').value;
       const compare = document.getElementById('compareRange').value;
       const country = document.getElementById('countryFilter').value;
       const device = document.getElementById('deviceFilter').value;
@@ -856,9 +966,29 @@
         showLoading(true);
         document.getElementById('dashboardMessage').innerHTML = '';
 
-        const endDate = new Date();
-        const startDate = new Date();
-        startDate.setDate(startDate.getDate() - days);
+        let endDate, startDate;
+
+        if (dateRangeSelect === 'custom') {
+          const startInput = document.getElementById('startDate').value;
+          const endInput = document.getElementById('endDate').value;
+          
+          if (!startInput || !endInput) {
+            showMessage('dashboardMessage', 'Por favor selecciona fechas de inicio y fin', 'error');
+            showLoading(false);
+            return;
+          }
+
+          startDate = new Date(startInput);
+          endDate = new Date(endInput);
+          
+          // Add one day to end date to include it
+          endDate.setDate(endDate.getDate() + 1);
+        } else {
+          const days = parseInt(dateRangeSelect);
+          endDate = new Date();
+          startDate = new Date();
+          startDate.setDate(startDate.getDate() - days);
+        }
 
         // Build dimensions
         const dimensions = ['query', 'page', 'date'];
@@ -889,12 +1019,15 @@
           await loadCountries(site, startDate, endDate);
         }
 
+        // Calculate days for comparison
+        const daysDiff = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24));
+
         // Previous period for comparison
         if (compare === 'previous') {
           const prevEndDate = new Date(startDate);
           prevEndDate.setDate(prevEndDate.getDate() - 1);
           const prevStartDate = new Date(prevEndDate);
-          prevStartDate.setDate(prevStartDate.getDate() - days);
+          prevStartDate.setDate(prevStartDate.getDate() - daysDiff);
           
           previousData = await fetchSearchAnalytics(site, prevStartDate, prevEndDate, ['query', 'page'], dimensionFilters);
         } else if (compare === 'year') {
@@ -1026,6 +1159,7 @@
       // Update tables
       updateKeywordsTab(queries, prevQueries);
       updateURLsTab(urls, prevURLs);
+      updatePositionsTab(queries);
       updateOpportunitiesTab(queries);
       updateCharts(currentData.rows);
 
@@ -1242,6 +1376,99 @@
       });
 
       updatePagination('urls', sorted.length);
+    }
+
+    function updatePositionsTab(queries) {
+      // Categorize by position ranges
+      const ranges = {
+        '1-3': { queries: [], clicks: 0, impressions: 0 },
+        '4-10': { queries: [], clicks: 0, impressions: 0 },
+        '11-20': { queries: [], clicks: 0, impressions: 0 },
+        '21+': { queries: [], clicks: 0, impressions: 0 }
+      };
+
+      Object.values(queries).forEach(q => {
+        if (q.position <= 3) {
+          ranges['1-3'].queries.push(q);
+          ranges['1-3'].clicks += q.clicks;
+          ranges['1-3'].impressions += q.impressions;
+        } else if (q.position <= 10) {
+          ranges['4-10'].queries.push(q);
+          ranges['4-10'].clicks += q.clicks;
+          ranges['4-10'].impressions += q.impressions;
+        } else if (q.position <= 20) {
+          ranges['11-20'].queries.push(q);
+          ranges['11-20'].clicks += q.clicks;
+          ranges['11-20'].impressions += q.impressions;
+        } else {
+          ranges['21+'].queries.push(q);
+          ranges['21+'].clicks += q.clicks;
+          ranges['21+'].impressions += q.impressions;
+        }
+      });
+
+      // Update stats cards
+      document.getElementById('pos1-3Count').textContent = ranges['1-3'].queries.length;
+      document.getElementById('pos1-3Clicks').textContent = `${ranges['1-3'].clicks.toLocaleString()} clics • ${ranges['1-3'].impressions.toLocaleString()} imp`;
+
+      document.getElementById('pos4-10Count').textContent = ranges['4-10'].queries.length;
+      document.getElementById('pos4-10Clicks').textContent = `${ranges['4-10'].clicks.toLocaleString()} clics • ${ranges['4-10'].impressions.toLocaleString()} imp`;
+
+      document.getElementById('pos11-20Count').textContent = ranges['11-20'].queries.length;
+      document.getElementById('pos11-20Clicks').textContent = `${ranges['11-20'].clicks.toLocaleString()} clics • ${ranges['11-20'].impressions.toLocaleString()} imp`;
+
+      document.getElementById('pos21Count').textContent = ranges['21+'].queries.length;
+      document.getElementById('pos21Clicks').textContent = `${ranges['21+'].clicks.toLocaleString()} clics • ${ranges['21+'].impressions.toLocaleString()} imp`;
+
+      // Low Hanging Fruit (4-10) - Detailed
+      const lowHanging = ranges['4-10'].queries
+        .sort((a, b) => b.impressions - a.impressions)
+        .slice(0, 50);
+
+      const tbody = document.getElementById('lowHangingDetailTable');
+      tbody.innerHTML = '';
+
+      lowHanging.forEach(q => {
+        const currentCTR = q.ctr;
+        const potentialCTR = estimateCTRForPosition(3);
+        const potentialClicks = Math.round(q.impressions * potentialCTR / 100);
+        const gain = potentialClicks - q.clicks;
+
+        const row = tbody.insertRow();
+        row.innerHTML = `
+          <td class="keyword-cell">${q.query}</td>
+          <td class="number-cell" style="color: #fb923c; font-weight: 600;">${q.position.toFixed(1)}</td>
+          <td class="number-cell">${q.clicks.toLocaleString()}</td>
+          <td class="number-cell">${q.impressions.toLocaleString()}</td>
+          <td class="number-cell">${currentCTR.toFixed(2)}%</td>
+          <td class="number-cell" style="color: #22c55e; font-weight: 600;">${potentialClicks.toLocaleString()} clics</td>
+          <td class="number-cell" style="color: #22c55e; font-weight: 700; font-size: 0.95rem;">+${gain.toLocaleString()}</td>
+        `;
+      });
+
+      // Position 11-20
+      const pos11to20 = ranges['11-20'].queries
+        .sort((a, b) => b.impressions - a.impressions)
+        .slice(0, 50);
+
+      const tbody2 = document.getElementById('pos11-20Table');
+      tbody2.innerHTML = '';
+
+      pos11to20.forEach(q => {
+        const potentialCTR = estimateCTRForPosition(10);
+        const potentialClicks = Math.round(q.impressions * potentialCTR / 100);
+        const gain = potentialClicks - q.clicks;
+
+        const row = tbody2.insertRow();
+        row.innerHTML = `
+          <td class="keyword-cell">${q.query}</td>
+          <td class="number-cell" style="color: #fb923c;">${q.position.toFixed(1)}</td>
+          <td class="number-cell">${q.clicks.toLocaleString()}</td>
+          <td class="number-cell">${q.impressions.toLocaleString()}</td>
+          <td class="number-cell">${q.ctr.toFixed(2)}%</td>
+          <td class="number-cell" style="color: #06b6d4; font-weight: 600;">+${gain.toLocaleString()} clics</td>
+        `;
+      });
     }
 
     function updateOpportunitiesTab(queries) {
