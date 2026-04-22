@@ -611,6 +611,17 @@
         
         <div id="debugInfo" style="margin-top: 1rem; padding: 1rem; background: rgba(6, 182, 212, 0.05); border: 1px solid rgba(6, 182, 212, 0.2); border-radius: 8px; font-size: 0.85rem; color: #67e8f9;"></div>
 
+        <div class="alert alert-warning" style="margin-top: 1rem; font-size: 0.85rem;">
+          <span>💡</span>
+          <div>
+            <strong>¿Los números no coinciden con Search Console?</strong><br>
+            1. Verifica que las <strong>fechas</strong> sean exactamente las mismas<br>
+            2. Verifica que los <strong>filtros</strong> (país/dispositivo) coincidan<br>
+            3. Si usas "Todos los países", compara con Search Console SIN filtros<br>
+            4. Si los clics coinciden pero las impresiones no, puede ser un límite de la API (máx 25,000 filas)
+          </div>
+        </div>
+
         <div class="btn-group" style="margin-top: 1rem;">
           <button class="btn btn-success" onclick="exportToExcel()">📊 Exportar Excel</button>
           <button class="btn btn-warning" onclick="generatePDF()">📄 Generar PDF</button>
@@ -1089,11 +1100,13 @@
         // Calculate days for comparison FIRST
         const daysDiff = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24));
 
-        // ALWAYS include country and device dimensions for accurate data
-        const dimensions = ['query', 'page', 'date', 'country', 'device'];
+        // Build dimensions - ONLY include country/device when filtering
+        const dimensions = ['query', 'page', 'date'];
         const dimensionFilters = [];
 
+        // Only add dimensions when filtering specifically
         if (country !== 'all') {
+          dimensions.push('country');
           dimensionFilters.push({
             dimension: 'country',
             operator: 'equals',
@@ -1102,6 +1115,7 @@
         }
 
         if (device !== 'all') {
+          dimensions.push('device');
           dimensionFilters.push({
             dimension: 'device',
             operator: 'equals',
@@ -1114,9 +1128,10 @@
         // Debug info
         const formatDateDebug = (date) => date.toISOString().split('T')[0];
         let debugHTML = `
-          <strong>📅 Período consultado:</strong> ${formatDateDebug(startDate)} → ${formatDateDebug(endDate)} 
-          (${daysDiff} días)<br>
-          <strong>📊 Datos obtenidos:</strong> ${currentData.rows ? currentData.rows.length.toLocaleString() : 0} filas
+          <strong>📅 Período consultado:</strong> ${formatDateDebug(startDate)} → ${formatDateDebug(endDate)} (${daysDiff} días)<br>
+          <strong>📊 Datos obtenidos:</strong> ${currentData.rows ? currentData.rows.length.toLocaleString() : 0} filas<br>
+          <strong>🔍 Dimensiones usadas:</strong> ${dimensions.join(', ')}<br>
+          <strong>🎯 Filtros activos:</strong> ${dimensionFilters.length > 0 ? dimensionFilters.map(f => `${f.dimension}=${f.expression}`).join(', ') : 'Ninguno'}
         `;
 
         // Load countries for filter
@@ -1260,6 +1275,16 @@
       const prevURLs = previousData ? processURLs(previousData.rows) : {};
 
       allData = { queries, urls };
+
+      // Add more debug info after processing
+      const debugContainer = document.getElementById('debugInfo');
+      const currentDebug = debugContainer.innerHTML;
+      debugContainer.innerHTML = currentDebug + `<br>
+        <strong>🔑 Keywords únicas:</strong> ${Object.keys(queries).length.toLocaleString()}<br>
+        <strong>🌐 URLs únicas:</strong> ${Object.keys(urls).length.toLocaleString()}<br>
+        <strong>✅ Total clics (calculado):</strong> ${Object.values(queries).reduce((sum, q) => sum + q.clicks, 0).toLocaleString()}<br>
+        <strong>👁️ Total impresiones (calculado):</strong> ${Object.values(queries).reduce((sum, q) => sum + q.impressions, 0).toLocaleString()}
+      `;
 
       // Update stats
       updateStats(queries, prevQueries);
