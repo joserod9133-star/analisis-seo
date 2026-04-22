@@ -608,6 +608,8 @@
         </div>
 
         <div id="activeFilters" style="margin-top: 1rem;"></div>
+        
+        <div id="debugInfo" style="margin-top: 1rem; padding: 1rem; background: rgba(6, 182, 212, 0.05); border: 1px solid rgba(6, 182, 212, 0.2); border-radius: 8px; font-size: 0.85rem; color: #67e8f9;"></div>
 
         <div class="btn-group" style="margin-top: 1rem;">
           <button class="btn btn-success" onclick="exportToExcel()">📊 Exportar Excel</button>
@@ -652,6 +654,7 @@
           <div class="tabs">
             <button class="tab active" onclick="switchTab('overview')">📊 General</button>
             <button class="tab" onclick="switchTab('keywords')">🔍 Keywords</button>
+            <button class="tab" onclick="switchTab('gained-lost')">🔄 Ganadas/Perdidas</button>
             <button class="tab" onclick="switchTab('urls')">🌐 URLs</button>
             <button class="tab" onclick="switchTab('positions')">📍 Por Posición</button>
             <button class="tab" onclick="switchTab('opportunities')">💎 Oportunidades</button>
@@ -699,6 +702,99 @@
             </div>
 
             <div class="pagination" id="keywordsPagination"></div>
+          </div>
+
+          <!-- Gained/Lost Keywords Tab -->
+          <div id="tab-gained-lost" class="hidden">
+            <h3 style="margin-bottom: 1.5rem; font-size: 1.2rem;">🔄 Análisis de Keywords Ganadas y Perdidas</h3>
+            
+            <div class="alert alert-info">
+              <span>ℹ️</span>
+              <div>
+                <strong>Comparación entre períodos:</strong> Keywords que aparecieron o desaparecieron entre el período actual y el anterior/año anterior.
+              </div>
+            </div>
+
+            <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); margin-bottom: 2rem;">
+              <div class="stat-card green">
+                <div class="stat-label">✅ Keywords Ganadas</div>
+                <div class="stat-value" style="color: #22c55e;" id="gainedCount">0</div>
+                <div style="font-size: 0.85rem; color: #94a3b8; margin-top: 0.5rem;">
+                  <div id="gainedClicks">0 clics</div>
+                  <div id="gainedImpressions">0 impresiones</div>
+                </div>
+              </div>
+              <div class="stat-card orange">
+                <div class="stat-label">❌ Keywords Perdidas</div>
+                <div class="stat-value" style="color: #ef4444;" id="lostCount">0</div>
+                <div style="font-size: 0.85rem; color: #94a3b8; margin-top: 0.5rem;">
+                  <div id="lostClicks">Perdiste 0 clics</div>
+                  <div id="lostImpressions">Perdiste 0 impresiones</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div>
+                <h3 style="margin-bottom: 1rem; font-size: 1.1rem; color: #22c55e;">✅ Keywords Ganadas (Nuevas)</h3>
+                <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 1rem;">
+                  Keywords que aparecieron en el período actual pero no estaban en el anterior
+                </p>
+                
+                <div class="table-container" style="max-height: 500px;">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Keyword</th>
+                        <th>Clics</th>
+                        <th>Impresiones</th>
+                        <th>CTR</th>
+                        <th>Posición</th>
+                      </tr>
+                    </thead>
+                    <tbody id="gainedKeywordsTable"></tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div>
+                <h3 style="margin-bottom: 1rem; font-size: 1.1rem; color: #ef4444;">❌ Keywords Perdidas</h3>
+                <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 1rem;">
+                  Keywords que estaban en el período anterior pero ya no aparecen
+                </p>
+                
+                <div class="table-container" style="max-height: 500px;">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Keyword</th>
+                        <th>Clics (antes)</th>
+                        <th>Impresiones (antes)</th>
+                        <th>CTR (antes)</th>
+                        <th>Posición (antes)</th>
+                      </tr>
+                    </thead>
+                    <tbody id="lostKeywordsTable"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <h3 style="margin: 2rem 0 1rem; font-size: 1.1rem;">📊 Impacto Total</h3>
+            <div class="alert" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1);">
+              <span>📈</span>
+              <div>
+                <div style="margin-bottom: 0.5rem;">
+                  <strong style="color: #22c55e;">Ganancia:</strong> <span id="totalGained">+0 clics</span>
+                </div>
+                <div style="margin-bottom: 0.5rem;">
+                  <strong style="color: #ef4444;">Pérdida:</strong> <span id="totalLost">-0 clics</span>
+                </div>
+                <div>
+                  <strong style="color: #06b6d4;">Neto:</strong> <span id="netChange">0 clics</span>
+                </div>
+              </div>
+            </div>
           </div>
 
           <!-- URLs Tab -->
@@ -1014,6 +1110,14 @@
 
         currentData = await fetchSearchAnalytics(site, startDate, endDate, dimensions, dimensionFilters);
 
+        // Debug info
+        const formatDateDebug = (date) => date.toISOString().split('T')[0];
+        let debugHTML = `
+          <strong>📅 Período consultado:</strong> ${formatDateDebug(startDate)} → ${formatDateDebug(endDate)} 
+          (${daysDiff} días)<br>
+          <strong>📊 Datos obtenidos:</strong> ${currentData.rows ? currentData.rows.length.toLocaleString() : 0} filas
+        `;
+
         // Load countries for filter
         if (country === 'all') {
           await loadCountries(site, startDate, endDate);
@@ -1040,6 +1144,12 @@
         } else {
           previousData = null;
         }
+
+        if (previousData && previousData.rows) {
+          debugHTML += `<br><strong>🔄 Período comparación:</strong> ${previousData.rows.length.toLocaleString()} filas`;
+        }
+
+        document.getElementById('debugInfo').innerHTML = debugHTML;
 
         updateActiveFilters(country, device);
         displayData();
@@ -1158,6 +1268,7 @@
 
       // Update tables
       updateKeywordsTab(queries, prevQueries);
+      updateGainedLostTab(queries, prevQueries);
       updateURLsTab(urls, prevURLs);
       updatePositionsTab(queries);
       updateOpportunitiesTab(queries);
@@ -1346,6 +1457,108 @@
       });
 
       updatePagination('keywords', sorted.length);
+    }
+
+    function updateGainedLostTab(current, previous) {
+      if (!previous || Object.keys(previous).length === 0) {
+        document.getElementById('gainedCount').textContent = 'N/A';
+        document.getElementById('lostCount').textContent = 'N/A';
+        document.getElementById('gainedClicks').textContent = 'Requiere comparación';
+        document.getElementById('lostClicks').textContent = 'Requiere comparación';
+        document.getElementById('gainedImpressions').textContent = '';
+        document.getElementById('lostImpressions').textContent = '';
+        document.getElementById('gainedKeywordsTable').innerHTML = '<tr><td colspan="5" style="text-align: center; color: #94a3b8; padding: 2rem;">Selecciona "Período anterior" o "Año anterior" para comparar</td></tr>';
+        document.getElementById('lostKeywordsTable').innerHTML = '<tr><td colspan="5" style="text-align: center; color: #94a3b8; padding: 2rem;">Selecciona "Período anterior" o "Año anterior" para comparar</td></tr>';
+        return;
+      }
+
+      const currentKeys = new Set(Object.keys(current));
+      const previousKeys = new Set(Object.keys(previous));
+      
+      // Keywords gained
+      const gained = [];
+      let gainedClicks = 0;
+      let gainedImpressions = 0;
+      
+      currentKeys.forEach(key => {
+        if (!previousKeys.has(key)) {
+          gained.push(current[key]);
+          gainedClicks += current[key].clicks;
+          gainedImpressions += current[key].impressions;
+        }
+      });
+
+      // Keywords lost
+      const lost = [];
+      let lostClicks = 0;
+      let lostImpressions = 0;
+      
+      previousKeys.forEach(key => {
+        if (!currentKeys.has(key)) {
+          lost.push(previous[key]);
+          lostClicks += previous[key].clicks;
+          lostImpressions += previous[key].impressions;
+        }
+      });
+
+      // Update stats
+      document.getElementById('gainedCount').textContent = gained.length.toLocaleString();
+      document.getElementById('gainedClicks').textContent = `${gainedClicks.toLocaleString()} clics`;
+      document.getElementById('gainedImpressions').textContent = `${gainedImpressions.toLocaleString()} impresiones`;
+
+      document.getElementById('lostCount').textContent = lost.length.toLocaleString();
+      document.getElementById('lostClicks').textContent = `Perdiste ${lostClicks.toLocaleString()} clics`;
+      document.getElementById('lostImpressions').textContent = `Perdiste ${lostImpressions.toLocaleString()} impresiones`;
+
+      // Impact summary
+      const netClicks = gainedClicks - lostClicks;
+      const netImpressions = gainedImpressions - lostImpressions;
+      
+      document.getElementById('totalGained').textContent = `+${gainedClicks.toLocaleString()} clics / +${gainedImpressions.toLocaleString()} imp`;
+      document.getElementById('totalLost').textContent = `-${lostClicks.toLocaleString()} clics / -${lostImpressions.toLocaleString()} imp`;
+      
+      const netColor = netClicks >= 0 ? '#22c55e' : '#ef4444';
+      document.getElementById('netChange').innerHTML = `<span style="color: ${netColor}; font-weight: 700;">${netClicks >= 0 ? '+' : ''}${netClicks.toLocaleString()} clics / ${netImpressions >= 0 ? '+' : ''}${netImpressions.toLocaleString()} imp</span>`;
+
+      // Gained keywords table
+      const gainedSorted = gained.sort((a, b) => b.clicks - a.clicks);
+      const tbody1 = document.getElementById('gainedKeywordsTable');
+      tbody1.innerHTML = '';
+
+      if (gainedSorted.length === 0) {
+        tbody1.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #94a3b8; padding: 2rem;">No hay keywords nuevas en este período</td></tr>';
+      } else {
+        gainedSorted.slice(0, 100).forEach(q => {
+          const row = tbody1.insertRow();
+          row.innerHTML = `
+            <td class="keyword-cell">${q.query}</td>
+            <td class="number-cell" style="color: #22c55e; font-weight: 600;">${q.clicks.toLocaleString()}</td>
+            <td class="number-cell">${q.impressions.toLocaleString()}</td>
+            <td class="number-cell">${q.ctr.toFixed(2)}%</td>
+            <td class="number-cell">${q.position.toFixed(1)}</td>
+          `;
+        });
+      }
+
+      // Lost keywords table
+      const lostSorted = lost.sort((a, b) => b.clicks - a.clicks);
+      const tbody2 = document.getElementById('lostKeywordsTable');
+      tbody2.innerHTML = '';
+
+      if (lostSorted.length === 0) {
+        tbody2.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #94a3b8; padding: 2rem;">No se perdieron keywords en este período</td></tr>';
+      } else {
+        lostSorted.slice(0, 100).forEach(q => {
+          const row = tbody2.insertRow();
+          row.innerHTML = `
+            <td class="keyword-cell">${q.query}</td>
+            <td class="number-cell" style="color: #ef4444; font-weight: 600;">${q.clicks.toLocaleString()}</td>
+            <td class="number-cell">${q.impressions.toLocaleString()}</td>
+            <td class="number-cell">${q.ctr.toFixed(2)}%</td>
+            <td class="number-cell">${q.position.toFixed(1)}</td>
+          `;
+        });
+      }
     }
 
     function updateURLsTab(urls, previous) {
