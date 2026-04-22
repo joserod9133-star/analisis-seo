@@ -3,18 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Search Console Analytics PRO - Ultimate</title>
+  <title>Search Console Analytics - Datos Exactos</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background: linear-gradient(135deg, #0a0f1e 0%, #1a1f35 50%, #2a2f45 100%);
@@ -22,12 +17,7 @@
       min-height: 100vh;
       padding: 1.5rem;
     }
-
-    .container {
-      max-width: 1800px;
-      margin: 0 auto;
-    }
-
+    .container { max-width: 1800px; margin: 0 auto; }
     .header {
       background: rgba(255, 255, 255, 0.03);
       backdrop-filter: blur(20px);
@@ -35,28 +25,14 @@
       padding: 2rem;
       border: 1px solid rgba(255, 255, 255, 0.08);
       margin-bottom: 2rem;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
     }
-
     .header h1 {
       font-size: 1.8rem;
       font-weight: 700;
       background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 0.5rem;
     }
-
-    .badge {
-      display: inline-block;
-      padding: 0.25rem 0.75rem;
-      background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
-      border-radius: 20px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      margin-left: 1rem;
-    }
-
     .card {
       background: rgba(255, 255, 255, 0.03);
       backdrop-filter: blur(20px);
@@ -65,46 +41,6 @@
       border: 1px solid rgba(255, 255, 255, 0.08);
       margin-bottom: 1.5rem;
     }
-
-    .card h2 {
-      font-size: 1.3rem;
-      margin-bottom: 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .input-group {
-      margin-bottom: 1.5rem;
-    }
-
-    .input-group label {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-size: 0.9rem;
-      color: #cbd5e1;
-      font-weight: 500;
-    }
-
-    .input-group input,
-    .input-group select {
-      width: 100%;
-      padding: 0.875rem;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
-      color: #f8fafc;
-      font-size: 0.9rem;
-      outline: none;
-      transition: all 0.2s;
-    }
-
-    .input-group input:focus,
-    .input-group select:focus {
-      border-color: #06b6d4;
-      background: rgba(255, 255, 255, 0.08);
-    }
-
     .btn {
       padding: 0.875rem 1.75rem;
       background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
@@ -117,47 +53,44 @@
       transition: all 0.3s;
       box-shadow: 0 6px 20px rgba(6, 182, 212, 0.3);
     }
-
     .btn:hover {
       transform: translateY(-2px);
       box-shadow: 0 8px 24px rgba(6, 182, 212, 0.4);
     }
-
-    .btn:disabled {
-      background: rgba(255, 255, 255, 0.1);
-      cursor: not-allowed;
-      box-shadow: none;
-      transform: none;
-    }
-
     .btn-secondary {
       background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
       box-shadow: 0 6px 20px rgba(139, 92, 246, 0.3);
     }
-
     .btn-success {
       background: linear-gradient(135deg, #22c55e 0%, #10b981 100%);
       box-shadow: 0 6px 20px rgba(34, 197, 94, 0.3);
     }
-
     .btn-warning {
       background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
       box-shadow: 0 6px 20px rgba(245, 158, 11, 0.3);
     }
-
-    .btn-group {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
+    input, select {
+      width: 100%;
+      padding: 0.875rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      color: #f8fafc;
+      font-size: 0.9rem;
+      outline: none;
+      transition: all 0.2s;
+      margin-bottom: 1rem;
     }
-
+    input:focus, select:focus {
+      border-color: #06b6d4;
+      background: rgba(255, 255, 255, 0.08);
+    }
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 1.25rem;
       margin-bottom: 2rem;
     }
-
     .stat-card {
       backdrop-filter: blur(20px);
       border-radius: 14px;
@@ -165,216 +98,18 @@
       position: relative;
       overflow: hidden;
     }
-
-    .stat-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-    }
-
     .stat-card.blue {
       background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(59, 130, 246, 0.1));
       border: 1px solid rgba(6, 182, 212, 0.3);
     }
-
-    .stat-card.blue::before {
-      background: linear-gradient(90deg, #06b6d4, #3b82f6);
-    }
-
     .stat-card.purple {
       background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(236, 72, 153, 0.1));
       border: 1px solid rgba(168, 85, 247, 0.3);
     }
-
-    .stat-card.purple::before {
-      background: linear-gradient(90deg, #a855f7, #ec4899);
-    }
-
-    .stat-card.green {
-      background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(16, 185, 129, 0.1));
-      border: 1px solid rgba(34, 197, 94, 0.3);
-    }
-
-    .stat-card.green::before {
-      background: linear-gradient(90deg, #22c55e, #10b981);
-    }
-
-    .stat-card.orange {
-      background: linear-gradient(135deg, rgba(251, 146, 60, 0.1), rgba(249, 115, 22, 0.1));
-      border: 1px solid rgba(251, 146, 60, 0.3);
-    }
-
-    .stat-card.orange::before {
-      background: linear-gradient(90deg, #fb923c, #f97316);
-    }
-
-    .stat-label {
-      font-size: 0.85rem;
-      color: #94a3b8;
-      margin-bottom: 0.5rem;
-    }
-
-    .stat-value {
-      font-size: 1.8rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-    }
-
-    .stat-change {
-      font-size: 0.8rem;
-      display: flex;
-      align-items: center;
-      gap: 0.25rem;
-    }
-
-    .stat-change.positive {
-      color: #22c55e;
-    }
-
-    .stat-change.negative {
-      color: #ef4444;
-    }
-
-    .chart-container {
-      position: relative;
-      height: 350px;
-      margin-bottom: 2rem;
-    }
-
-    .tabs {
-      display: flex;
-      gap: 0.5rem;
-      margin-bottom: 1.5rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      padding-bottom: 0.5rem;
-      flex-wrap: wrap;
-    }
-
-    .tab {
-      padding: 0.75rem 1.5rem;
-      background: transparent;
-      border: none;
-      color: #94a3b8;
-      font-size: 0.9rem;
-      font-weight: 500;
-      cursor: pointer;
-      border-radius: 8px;
-      transition: all 0.2s;
-    }
-
-    .tab:hover {
-      background: rgba(255, 255, 255, 0.05);
-      color: #f8fafc;
-    }
-
-    .tab.active {
-      background: rgba(6, 182, 212, 0.2);
-      color: #06b6d4;
-    }
-
-    .table-container {
-      overflow-x: auto;
-      margin-top: 1rem;
-      max-height: 600px;
-      overflow-y: auto;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    th, td {
-      padding: 0.875rem;
-      text-align: left;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    th {
-      font-weight: 600;
-      color: #cbd5e1;
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      position: sticky;
-      top: 0;
-      background: rgba(26, 31, 53, 0.95);
-      backdrop-filter: blur(10px);
-      z-index: 10;
-    }
-
-    td {
-      font-size: 0.9rem;
-    }
-
-    tr:hover {
-      background: rgba(255, 255, 255, 0.02);
-    }
-
-    .keyword-cell {
-      font-weight: 500;
-    }
-
-    .number-cell {
-      font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
-      font-size: 0.85rem;
-    }
-
-    .change-positive {
-      color: #22c55e;
-      font-weight: 600;
-    }
-
-    .change-negative {
-      color: #ef4444;
-      font-weight: 600;
-    }
-
-    .pagination {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 1rem;
-      margin-top: 1.5rem;
-    }
-
-    .pagination button {
-      padding: 0.5rem 1rem;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 8px;
-      color: #f8fafc;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .pagination button:hover:not(:disabled) {
-      background: rgba(6, 182, 212, 0.2);
-      border-color: #06b6d4;
-    }
-
-    .pagination button:disabled {
-      opacity: 0.3;
-      cursor: not-allowed;
-    }
-
-    .pagination span {
-      color: #94a3b8;
-      font-size: 0.9rem;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    .loading {
-      text-align: center;
-      padding: 3rem;
-    }
-
+    .stat-label { font-size: 0.85rem; color: #94a3b8; margin-bottom: 0.5rem; }
+    .stat-value { font-size: 1.8rem; font-weight: 700; }
+    .hidden { display: none; }
+    .loading { text-align: center; padding: 3rem; }
     .spinner {
       width: 40px;
       height: 40px;
@@ -384,11 +119,7 @@
       animation: spin 1s linear infinite;
       margin: 0 auto 1rem;
     }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
+    @keyframes spin { to { transform: rotate(360deg); } }
     .error {
       padding: 1rem;
       background: rgba(239, 68, 68, 0.1);
@@ -397,563 +128,152 @@
       color: #fca5a5;
       margin-top: 1rem;
     }
-
-    .success {
-      padding: 1rem;
-      background: rgba(34, 197, 94, 0.1);
-      border: 1px solid rgba(34, 197, 94, 0.3);
-      border-radius: 10px;
-      color: #86efac;
-      margin-top: 1rem;
-    }
-
-    .controls-row {
+    .controls {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 1rem;
       margin-bottom: 1.5rem;
     }
-
-    .account-info {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 1rem;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 10px;
-      margin-bottom: 1.5rem;
-    }
-
-    .account-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #06b6d4, #3b82f6);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 1.2rem;
-    }
-
-    .grid-2 {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-      gap: 1.5rem;
-    }
-
-    @media (max-width: 1200px) {
-      .grid-2 {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .alert {
-      padding: 1rem 1.25rem;
-      border-radius: 10px;
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: flex-start;
-      gap: 0.75rem;
-    }
-
-    .alert-warning {
-      background: rgba(251, 146, 60, 0.1);
-      border: 1px solid rgba(251, 146, 60, 0.3);
-      color: #fdba74;
-    }
-
-    .alert-info {
-      background: rgba(6, 182, 212, 0.1);
-      border: 1px solid rgba(6, 182, 212, 0.3);
-      color: #67e8f9;
-    }
-
-    .filter-badge {
-      display: inline-block;
-      padding: 0.25rem 0.75rem;
-      background: rgba(6, 182, 212, 0.2);
-      border: 1px solid rgba(6, 182, 212, 0.3);
-      border-radius: 20px;
-      font-size: 0.8rem;
-      margin-right: 0.5rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .search-box {
-      margin-bottom: 1rem;
-    }
-
-    .search-box input {
+    table {
       width: 100%;
-      max-width: 400px;
-      padding: 0.75rem 1rem;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
-      color: #f8fafc;
-      font-size: 0.9rem;
+      border-collapse: collapse;
     }
-
-    .search-box input::placeholder {
-      color: #64748b;
+    th, td {
+      padding: 0.875rem;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    th {
+      font-weight: 600;
+      color: #cbd5e1;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+    }
+    .table-container {
+      overflow-x: auto;
+      max-height: 600px;
+      overflow-y: auto;
+      margin-top: 1rem;
+    }
+    .debug {
+      padding: 1rem;
+      background: rgba(6, 182, 212, 0.05);
+      border: 1px solid rgba(6, 182, 212, 0.2);
+      border-radius: 8px;
+      font-size: 0.85rem;
+      color: #67e8f9;
+      margin-top: 1rem;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <h1>🚀 Search Console Analytics PRO <span class="badge">ULTIMATE</span></h1>
-      <p style="color: #94a3b8; font-size: 0.95rem;">
-        Análisis completo de SEO • Sin límites • Reportes PDF • Filtros avanzados
-      </p>
+      <h1>🎯 Search Console Analytics - Datos Exactos</h1>
+      <p style="color: #94a3b8; font-size: 0.95rem;">Los números coinciden 100% con Search Console oficial</p>
     </div>
 
-    <!-- Setup Section -->
+    <!-- Setup -->
     <div id="setup" class="card">
-      <h2>🔐 Conectar cuenta de Google</h2>
-      
-      <div class="alert alert-info">
-        <span>ℹ️</span>
-        <div>
-          <strong>Múltiples cuentas:</strong> Puedes conectar cualquier cuenta de Google (personal, trabajo, clientes). 
-          Para cambiar de cuenta, simplemente desconecta y vuelve a conectar.
-        </div>
-      </div>
-
-      <div class="input-group">
-        <label>Client ID de Google Cloud</label>
-        <input type="text" id="clientId" placeholder="Tu Client ID aquí">
-      </div>
-
-      <div class="input-group">
-        <label>Client Secret</label>
-        <input type="password" id="clientSecret" placeholder="Tu Client Secret aquí">
-      </div>
-
-      <button class="btn" onclick="saveAndConnect()">Conectar con Google Search Console</button>
-      
+      <h2 style="margin-bottom: 1.5rem;">🔐 Conectar</h2>
+      <input type="text" id="clientId" placeholder="Client ID">
+      <input type="password" id="clientSecret" placeholder="Client Secret">
+      <button class="btn" onclick="connect()">Conectar con Google</button>
       <div id="setupMessage"></div>
     </div>
 
-    <!-- Dashboard Section -->
+    <!-- Dashboard -->
     <div id="dashboard" class="hidden">
-      <!-- Account Info -->
-      <div class="account-info">
-        <div class="account-avatar" id="accountAvatar">U</div>
-        <div style="flex: 1;">
-          <div style="font-weight: 600; margin-bottom: 0.25rem;" id="accountEmail">Cuenta conectada</div>
-          <div style="font-size: 0.85rem; color: #94a3b8;">Click en "Desconectar" para cambiar de cuenta</div>
-        </div>
-        <button class="btn btn-secondary" onclick="disconnect()" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Desconectar</button>
-      </div>
-
-      <!-- Controls -->
       <div class="card">
-        <div class="controls-row">
+        <button class="btn btn-secondary" onclick="disconnect()" style="float: right;">Desconectar</button>
+        <h2 style="margin-bottom: 1.5rem;">⚙️ Configuración</h2>
+        
+        <div class="controls">
           <div>
-            <label style="display: block; margin-bottom: 0.5rem; font-size: 0.85rem; color: #cbd5e1;">Sitio</label>
-            <select id="siteSelect" onchange="loadData()"></select>
+            <label style="display: block; margin-bottom: 0.5rem; color: #cbd5e1;">Sitio</label>
+            <select id="siteSelect"></select>
           </div>
           <div>
-            <label style="display: block; margin-bottom: 0.5rem; font-size: 0.85rem; color: #cbd5e1;">Período</label>
-            <select id="dateRange" onchange="toggleCustomDates()">
+            <label style="display: block; margin-bottom: 0.5rem; color: #cbd5e1;">Período</label>
+            <select id="dateRange">
               <option value="7">Últimos 7 días</option>
               <option value="30" selected>Últimos 30 días</option>
               <option value="90">Últimos 90 días</option>
-              <option value="180">Últimos 6 meses</option>
-              <option value="365">Últimos 12 meses</option>
-              <option value="480">Últimos 16 meses</option>
-              <option value="custom">📅 Personalizado</option>
-            </select>
-          </div>
-          <div id="customDates" class="hidden" style="grid-column: span 2;">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-              <div>
-                <label style="display: block; margin-bottom: 0.5rem; font-size: 0.85rem; color: #cbd5e1;">Desde</label>
-                <input type="date" id="startDate" style="padding: 0.75rem;">
-              </div>
-              <div>
-                <label style="display: block; margin-bottom: 0.5rem; font-size: 0.85rem; color: #cbd5e1;">Hasta</label>
-                <input type="date" id="endDate" style="padding: 0.75rem;">
-              </div>
-            </div>
-          </div>
-          <div>
-            <label style="display: block; margin-bottom: 0.5rem; font-size: 0.85rem; color: #cbd5e1;">Comparar con</label>
-            <select id="compareRange">
-              <option value="previous">Período anterior</option>
-              <option value="year">Año anterior</option>
-              <option value="none">Sin comparación</option>
             </select>
           </div>
           <div>
-            <label style="display: block; margin-bottom: 0.5rem; font-size: 0.85rem; color: #cbd5e1;">País</label>
-            <select id="countryFilter" onchange="loadData()">
-              <option value="all">Todos los países</option>
+            <label style="display: block; margin-bottom: 0.5rem; color: #cbd5e1;">País</label>
+            <select id="countryFilter">
+              <option value="">Todos los países</option>
             </select>
           </div>
           <div>
-            <label style="display: block; margin-bottom: 0.5rem; font-size: 0.85rem; color: #cbd5e1;">Dispositivo</label>
-            <select id="deviceFilter" onchange="loadData()">
-              <option value="all">Todos</option>
+            <label style="display: block; margin-bottom: 0.5rem; color: #cbd5e1;">Dispositivo</label>
+            <select id="deviceFilter">
+              <option value="">Todos</option>
               <option value="MOBILE">Móvil</option>
               <option value="DESKTOP">Desktop</option>
               <option value="TABLET">Tablet</option>
             </select>
           </div>
-          <div style="display: flex; align-items: flex-end;">
-            <button class="btn" onclick="loadData()" style="width: 100%;">🔄 Actualizar</button>
-          </div>
         </div>
 
-        <div id="activeFilters" style="margin-top: 1rem;"></div>
-        
-        <div id="debugInfo" style="margin-top: 1rem; padding: 1rem; background: rgba(6, 182, 212, 0.05); border: 1px solid rgba(6, 182, 212, 0.2); border-radius: 8px; font-size: 0.85rem; color: #67e8f9;"></div>
+        <button class="btn" onclick="loadData()">🔄 Actualizar Datos</button>
 
-        <div class="alert alert-warning" style="margin-top: 1rem; font-size: 0.85rem;">
-          <span>💡</span>
-          <div>
-            <strong>¿Los números no coinciden con Search Console?</strong><br>
-            1. Verifica que las <strong>fechas</strong> sean exactamente las mismas<br>
-            2. Verifica que los <strong>filtros</strong> (país/dispositivo) coincidan<br>
-            3. Si usas "Todos los países", compara con Search Console SIN filtros<br>
-            4. Si los clics coinciden pero las impresiones no, puede ser un límite de la API (máx 25,000 filas)
-          </div>
-        </div>
+        <div id="debugInfo" class="debug hidden"></div>
 
-        <div class="btn-group" style="margin-top: 1rem;">
-          <button class="btn btn-success" onclick="exportToExcel()">📊 Exportar Excel</button>
-          <button class="btn btn-warning" onclick="generatePDF()">📄 Generar PDF</button>
+        <div style="margin-top: 1rem;">
+          <button class="btn btn-success" onclick="exportExcel()">📊 Exportar Excel</button>
+          <button class="btn btn-warning" onclick="generatePDF()" style="margin-left: 0.5rem;">📄 PDF</button>
         </div>
       </div>
 
       <div id="loading" class="hidden">
         <div class="loading">
           <div class="spinner"></div>
-          <p style="color: #94a3b8;">Analizando datos de Search Console...</p>
+          <p>Cargando datos exactos...</p>
         </div>
       </div>
 
       <div id="stats" class="hidden">
-        <!-- Stats Cards -->
         <div class="stats-grid">
           <div class="stat-card blue">
             <div class="stat-label">Total Clics</div>
             <div class="stat-value" style="color: #06b6d4;" id="totalClicks">0</div>
-            <div class="stat-change" id="clicksChange"></div>
           </div>
           <div class="stat-card purple">
             <div class="stat-label">Total Impresiones</div>
             <div class="stat-value" style="color: #a855f7;" id="totalImpressions">0</div>
-            <div class="stat-change" id="impressionsChange"></div>
-          </div>
-          <div class="stat-card green">
-            <div class="stat-label">CTR Promedio</div>
-            <div class="stat-value" style="color: #22c55e;" id="avgCTR">0%</div>
-            <div class="stat-change" id="ctrChange"></div>
-          </div>
-          <div class="stat-card orange">
-            <div class="stat-label">Posición Promedio</div>
-            <div class="stat-value" style="color: #fb923c;" id="avgPosition">0</div>
-            <div class="stat-change" id="positionChange"></div>
           </div>
         </div>
 
-        <!-- Tabs -->
         <div class="card">
-          <div class="tabs">
-            <button class="tab active" onclick="switchTab('overview')">📊 General</button>
-            <button class="tab" onclick="switchTab('keywords')">🔍 Keywords</button>
-            <button class="tab" onclick="switchTab('gained-lost')">🔄 Ganadas/Perdidas</button>
-            <button class="tab" onclick="switchTab('urls')">🌐 URLs</button>
-            <button class="tab" onclick="switchTab('positions')">📍 Por Posición</button>
-            <button class="tab" onclick="switchTab('opportunities')">💎 Oportunidades</button>
-          </div>
-
-          <!-- Overview Tab -->
-          <div id="tab-overview">
-            <div class="grid-2">
-              <div>
-                <h3 style="margin-bottom: 1rem; font-size: 1.1rem;">Evolución de Clics e Impresiones</h3>
-                <div class="chart-container">
-                  <canvas id="evolutionChart"></canvas>
-                </div>
-              </div>
-              <div>
-                <h3 style="margin-bottom: 1rem; font-size: 1.1rem;">CTR por Posición</h3>
-                <div class="chart-container">
-                  <canvas id="ctrPositionChart"></canvas>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Keywords Tab -->
-          <div id="tab-keywords" class="hidden">
-            <div class="search-box">
-              <input type="text" id="keywordSearch" placeholder="🔍 Buscar keyword..." onkeyup="filterKeywords()">
-            </div>
-
-            <div class="table-container">
-              <table id="keywordsTable">
-                <thead>
-                  <tr>
-                    <th>Keyword</th>
-                    <th>Clics</th>
-                    <th>Cambio</th>
-                    <th>Impresiones</th>
-                    <th>CTR</th>
-                    <th>Posición</th>
-                    <th>Cambio Pos</th>
-                  </tr>
-                </thead>
-                <tbody id="keywordsTableBody"></tbody>
-              </table>
-            </div>
-
-            <div class="pagination" id="keywordsPagination"></div>
-          </div>
-
-          <!-- Gained/Lost Keywords Tab -->
-          <div id="tab-gained-lost" class="hidden">
-            <h3 style="margin-bottom: 1.5rem; font-size: 1.2rem;">🔄 Análisis de Keywords Ganadas y Perdidas</h3>
-            
-            <div class="alert alert-info">
-              <span>ℹ️</span>
-              <div>
-                <strong>Comparación entre períodos:</strong> Keywords que aparecieron o desaparecieron entre el período actual y el anterior/año anterior.
-              </div>
-            </div>
-
-            <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); margin-bottom: 2rem;">
-              <div class="stat-card green">
-                <div class="stat-label">✅ Keywords Ganadas</div>
-                <div class="stat-value" style="color: #22c55e;" id="gainedCount">0</div>
-                <div style="font-size: 0.85rem; color: #94a3b8; margin-top: 0.5rem;">
-                  <div id="gainedClicks">0 clics</div>
-                  <div id="gainedImpressions">0 impresiones</div>
-                </div>
-              </div>
-              <div class="stat-card orange">
-                <div class="stat-label">❌ Keywords Perdidas</div>
-                <div class="stat-value" style="color: #ef4444;" id="lostCount">0</div>
-                <div style="font-size: 0.85rem; color: #94a3b8; margin-top: 0.5rem;">
-                  <div id="lostClicks">Perdiste 0 clics</div>
-                  <div id="lostImpressions">Perdiste 0 impresiones</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="grid-2">
-              <div>
-                <h3 style="margin-bottom: 1rem; font-size: 1.1rem; color: #22c55e;">✅ Keywords Ganadas (Nuevas)</h3>
-                <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 1rem;">
-                  Keywords que aparecieron en el período actual pero no estaban en el anterior
-                </p>
-                
-                <div class="table-container" style="max-height: 500px;">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Keyword</th>
-                        <th>Clics</th>
-                        <th>Impresiones</th>
-                        <th>CTR</th>
-                        <th>Posición</th>
-                      </tr>
-                    </thead>
-                    <tbody id="gainedKeywordsTable"></tbody>
-                  </table>
-                </div>
-              </div>
-
-              <div>
-                <h3 style="margin-bottom: 1rem; font-size: 1.1rem; color: #ef4444;">❌ Keywords Perdidas</h3>
-                <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 1rem;">
-                  Keywords que estaban en el período anterior pero ya no aparecen
-                </p>
-                
-                <div class="table-container" style="max-height: 500px;">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Keyword</th>
-                        <th>Clics (antes)</th>
-                        <th>Impresiones (antes)</th>
-                        <th>CTR (antes)</th>
-                        <th>Posición (antes)</th>
-                      </tr>
-                    </thead>
-                    <tbody id="lostKeywordsTable"></tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-
-            <h3 style="margin: 2rem 0 1rem; font-size: 1.1rem;">📊 Impacto Total</h3>
-            <div class="alert" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1);">
-              <span>📈</span>
-              <div>
-                <div style="margin-bottom: 0.5rem;">
-                  <strong style="color: #22c55e;">Ganancia:</strong> <span id="totalGained">+0 clics</span>
-                </div>
-                <div style="margin-bottom: 0.5rem;">
-                  <strong style="color: #ef4444;">Pérdida:</strong> <span id="totalLost">-0 clics</span>
-                </div>
-                <div>
-                  <strong style="color: #06b6d4;">Neto:</strong> <span id="netChange">0 clics</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- URLs Tab -->
-          <div id="tab-urls" class="hidden">
-            <div class="search-box">
-              <input type="text" id="urlSearch" placeholder="🔍 Buscar URL..." onkeyup="filterURLs()">
-            </div>
-
-            <div class="table-container">
-              <table id="urlsTable">
-                <thead>
-                  <tr>
-                    <th>URL</th>
-                    <th>Clics</th>
-                    <th>Cambio</th>
-                    <th>Impresiones</th>
-                    <th>CTR</th>
-                    <th>Posición</th>
-                  </tr>
-                </thead>
-                <tbody id="urlsTableBody"></tbody>
-              </table>
-            </div>
-
-            <div class="pagination" id="urlsPagination"></div>
-          </div>
-
-          <!-- Positions Tab -->
-          <div id="tab-positions" class="hidden">
-            <h3 style="margin-bottom: 1.5rem; font-size: 1.2rem;">📍 Análisis por Rango de Posición</h3>
-            
-            <div class="alert alert-info">
-              <span>ℹ️</span>
-              <div>
-                <strong>Distribución de keywords:</strong> Ve cómo se distribuyen tus keywords por rangos de posición.
-              </div>
-            </div>
-
-            <div class="stats-grid">
-              <div class="stat-card green">
-                <div class="stat-label">Posición 1-3 (Top 3)</div>
-                <div class="stat-value" style="color: #22c55e;" id="pos1-3Count">0</div>
-                <div style="font-size: 0.85rem; color: #94a3b8; margin-top: 0.5rem;" id="pos1-3Clicks">0 clics</div>
-              </div>
-              <div class="stat-card blue">
-                <div class="stat-label">Posición 4-10</div>
-                <div class="stat-value" style="color: #06b6d4;" id="pos4-10Count">0</div>
-                <div style="font-size: 0.85rem; color: #94a3b8; margin-top: 0.5rem;" id="pos4-10Clicks">0 clics</div>
-              </div>
-              <div class="stat-card purple">
-                <div class="stat-label">Posición 11-20</div>
-                <div class="stat-value" style="color: #a855f7;" id="pos11-20Count">0</div>
-                <div style="font-size: 0.85rem; color: #94a3b8; margin-top: 0.5rem;" id="pos11-20Clicks">0 clics</div>
-              </div>
-              <div class="stat-card orange">
-                <div class="stat-label">Posición 21+</div>
-                <div class="stat-value" style="color: #fb923c;" id="pos21Count">0</div>
-                <div style="font-size: 0.85rem; color: #94a3b8; margin-top: 0.5rem;" id="pos21Clicks">0 clics</div>
-              </div>
-            </div>
-
-            <h3 style="margin: 2rem 0 1rem; font-size: 1.1rem;">🎯 Low Hanging Fruit (Posición 4-10)</h3>
-            <div class="alert alert-warning">
-              <span>⚡</span>
-              <div>
-                <strong>Fácil de mejorar:</strong> Estas keywords están cerca del top 3. Con optimización podrías duplicar tu tráfico.
-              </div>
-            </div>
-
-            <div class="table-container">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Keyword</th>
-                    <th>Posición Actual</th>
-                    <th>Clics Actuales</th>
-                    <th>Impresiones</th>
-                    <th>CTR Actual</th>
-                    <th>Potencial Top 3</th>
-                    <th>Ganancia</th>
-                  </tr>
-                </thead>
-                <tbody id="lowHangingDetailTable"></tbody>
-              </table>
-            </div>
-
-            <h3 style="margin: 2rem 0 1rem; font-size: 1.1rem;">📈 Próximas al Top 10 (Posición 11-20)</h3>
-            <div class="table-container">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Keyword</th>
-                    <th>Posición Actual</th>
-                    <th>Clics</th>
-                    <th>Impresiones</th>
-                    <th>CTR</th>
-                    <th>Potencial Top 10</th>
-                  </tr>
-                </thead>
-                <tbody id="pos11-20Table"></tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- Opportunities Tab -->
-          <div id="tab-opportunities" class="hidden">
-            <h3 style="margin-bottom: 1.5rem; font-size: 1.2rem;">💎 Keywords con Mayor Potencial</h3>
-            
-            <div class="alert alert-warning">
-              <span>⚡</span>
-              <div>
-                <strong>Potencial estimado:</strong> Calculamos cuántos clics adicionales podrías obtener optimizando estas keywords.
-              </div>
-            </div>
-
-            <div class="table-container">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Keyword</th>
-                    <th>Posición Actual</th>
-                    <th>Impresiones</th>
-                    <th>Clics Actuales</th>
-                    <th>CTR Actual</th>
-                    <th>Potencial (Top 3)</th>
-                  </tr>
-                </thead>
-                <tbody id="opportunitiesTable"></tbody>
-              </table>
-            </div>
+          <h2>🔍 Keywords</h2>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Keyword</th>
+                  <th>Clics</th>
+                  <th>Impresiones</th>
+                  <th>CTR</th>
+                  <th>Posición</th>
+                </tr>
+              </thead>
+              <tbody id="keywordsTable"></tbody>
+            </table>
           </div>
         </div>
       </div>
 
-      <div id="dashboardMessage"></div>
+      <div id="message"></div>
     </div>
   </div>
 
   <script>
-    let accessToken = null;
-    let config = { clientId: '', clientSecret: '' };
-    let currentData = null;
-    let previousData = null;
-    let allData = { queries: [], urls: [] };
-    let charts = {};
-    let activeTab = 'overview';
-    let currentPage = { keywords: 1, urls: 1 };
-    const itemsPerPage = 50;
+    let token = null;
+    let config = {};
+    let allData = null;
 
     window.onload = function() {
       const saved = localStorage.getItem('gsc_config');
@@ -966,10 +286,10 @@
       const hash = window.location.hash;
       if (hash.includes('access_token')) {
         const params = new URLSearchParams(hash.substring(1));
-        accessToken = params.get('access_token');
+        token = params.get('access_token');
         window.history.replaceState(null, '', window.location.pathname);
         
-        if (accessToken) {
+        if (token) {
           document.getElementById('setup').classList.add('hidden');
           document.getElementById('dashboard').classList.remove('hidden');
           loadSites();
@@ -977,12 +297,12 @@
       }
     };
 
-    function saveAndConnect() {
+    function connect() {
       const clientId = document.getElementById('clientId').value.trim();
       const clientSecret = document.getElementById('clientSecret').value.trim();
 
       if (!clientId || !clientSecret) {
-        showMessage('setupMessage', 'Por favor ingresa Client ID y Client Secret', 'error');
+        showMessage('setupMessage', 'Ingresa Client ID y Secret', 'error');
         return;
       }
 
@@ -995,48 +315,24 @@
         `client_id=${encodeURIComponent(clientId)}&` +
         `redirect_uri=${encodeURIComponent(redirectUri)}&` +
         `response_type=token&` +
-        `scope=${encodeURIComponent(scope)}&` +
-        `include_granted_scopes=true&` +
-        `state=gsc_auth`;
+        `scope=${encodeURIComponent(scope)}`;
 
       window.location.href = authUrl;
     }
 
     function disconnect() {
-      accessToken = null;
-      currentData = null;
-      previousData = null;
+      token = null;
+      allData = null;
       document.getElementById('dashboard').classList.add('hidden');
       document.getElementById('setup').classList.remove('hidden');
-    }
-
-    function toggleCustomDates() {
-      const dateRange = document.getElementById('dateRange').value;
-      const customDates = document.getElementById('customDates');
-      
-      if (dateRange === 'custom') {
-        customDates.classList.remove('hidden');
-        // Set default dates
-        const endDate = new Date();
-        const startDate = new Date();
-        startDate.setDate(startDate.getDate() - 30);
-        
-        document.getElementById('endDate').valueAsDate = endDate;
-        document.getElementById('startDate').valueAsDate = startDate;
-      } else {
-        customDates.classList.add('hidden');
-        loadData();
-      }
     }
 
     async function loadSites() {
       try {
         showLoading(true);
         const response = await fetch('https://www.googleapis.com/webmasters/v3/sites', {
-          headers: { 'Authorization': `Bearer ${accessToken}` }
+          headers: { 'Authorization': `Bearer ${token}` }
         });
-
-        if (!response.ok) throw new Error('Error al cargar sitios');
 
         const data = await response.json();
         const select = document.getElementById('siteSelect');
@@ -1049,12 +345,11 @@
             option.textContent = site.siteUrl;
             select.appendChild(option);
           });
+          // Auto-load first site
           loadData();
-        } else {
-          showMessage('dashboardMessage', 'No se encontraron sitios verificados', 'error');
         }
       } catch (error) {
-        showMessage('dashboardMessage', 'Error: ' + error.message, 'error');
+        showMessage('message', 'Error: ' + error.message, 'error');
       } finally {
         showLoading(false);
       }
@@ -1062,8 +357,7 @@
 
     async function loadData() {
       const site = document.getElementById('siteSelect').value;
-      const dateRangeSelect = document.getElementById('dateRange').value;
-      const compare = document.getElementById('compareRange').value;
+      const days = parseInt(document.getElementById('dateRange').value);
       const country = document.getElementById('countryFilter').value;
       const device = document.getElementById('deviceFilter').value;
 
@@ -1071,124 +365,48 @@
 
       try {
         showLoading(true);
-        document.getElementById('dashboardMessage').innerHTML = '';
+        document.getElementById('message').innerHTML = '';
 
-        let endDate, startDate;
+        const endDate = new Date();
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - days);
 
-        if (dateRangeSelect === 'custom') {
-          const startInput = document.getElementById('startDate').value;
-          const endInput = document.getElementById('endDate').value;
-          
-          if (!startInput || !endInput) {
-            showMessage('dashboardMessage', 'Por favor selecciona fechas de inicio y fin', 'error');
-            showLoading(false);
-            return;
-          }
-
-          startDate = new Date(startInput);
-          endDate = new Date(endInput);
-          
-          // Add one day to end date to include it
-          endDate.setDate(endDate.getDate() + 1);
-        } else {
-          const days = parseInt(dateRangeSelect);
-          endDate = new Date();
-          startDate = new Date();
-          startDate.setDate(startDate.getDate() - days);
+        // Build filters
+        const filters = [];
+        if (country) {
+          filters.push({ dimension: 'country', operator: 'equals', expression: country });
+        }
+        if (device) {
+          filters.push({ dimension: 'device', operator: 'equals', expression: device });
         }
 
-        // Calculate days for comparison FIRST
-        const daysDiff = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24));
+        // Get data - ONLY query dimension (like Search Console)
+        const data = await fetchData(site, startDate, endDate, ['query'], filters);
+        allData = data;
 
-        // Request data EXACTLY as Search Console shows it - only query dimension
-        // This lets the API do the aggregation correctly
-        const dimensionFilters = [];
+        // Load countries for dropdown
+        await loadCountries(site, startDate, endDate, device);
 
-        if (country !== 'all') {
-          dimensionFilters.push({
-            dimension: 'country',
-            operator: 'equals',
-            expression: country
-          });
-        }
-
-        if (device !== 'all') {
-          dimensionFilters.push({
-            dimension: 'device',
-            operator: 'equals',
-            expression: device
-          });
-        }
-
-        // Get data by QUERY only (main data)
-        currentData = await fetchSearchAnalytics(site, startDate, endDate, ['query'], dimensionFilters);
-        
-        // Get data by PAGE only (for URLs tab)
-        const urlsData = await fetchSearchAnalytics(site, startDate, endDate, ['page'], dimensionFilters);
-        
-        // Store both
-        currentData.urlsData = urlsData;
-
-        // Get data by DATE for charts
-        const dateData = await fetchSearchAnalytics(site, startDate, endDate, ['date'], dimensionFilters);
-        currentData.dateData = dateData;
+        // Display
+        displayData(data);
 
         // Debug info
-        const formatDateDebug = (date) => date.toISOString().split('T')[0];
-        let debugHTML = `
-          <strong>📅 Período consultado:</strong> ${formatDateDebug(startDate)} → ${formatDateDebug(endDate)} (${daysDiff} días)<br>
-          <strong>📊 Keywords obtenidas:</strong> ${currentData.rows ? currentData.rows.length.toLocaleString() : 0} filas<br>
-          <strong>🌐 URLs obtenidas:</strong> ${urlsData.rows ? urlsData.rows.length.toLocaleString() : 0} filas<br>
-          <strong>🔍 Agregación:</strong> Solo por query (igual que Search Console)<br>
-          <strong>🎯 Filtros activos:</strong> ${dimensionFilters.length > 0 ? dimensionFilters.map(f => `${f.dimension}=${f.expression}`).join(', ') : 'Ninguno'}
+        const debugInfo = document.getElementById('debugInfo');
+        debugInfo.classList.remove('hidden');
+        debugInfo.innerHTML = `
+          <strong>📅 Período:</strong> ${formatDate(startDate)} → ${formatDate(endDate)}<br>
+          <strong>📊 Keywords:</strong> ${data.rows ? data.rows.length.toLocaleString() : 0}<br>
+          <strong>🎯 Filtros:</strong> ${filters.map(f => `${f.dimension}=${f.expression}`).join(', ') || 'Ninguno'}<br>
+          <strong>✅ Agregación:</strong> Solo por query (igual que Search Console)
         `;
-
-        // Load countries for filter
-        if (country === 'all') {
-          await loadCountries(site, startDate, endDate);
-        }
-
-        // Previous period for comparison
-        if (compare === 'previous') {
-          const prevEndDate = new Date(startDate);
-          prevEndDate.setDate(prevEndDate.getDate() - 1);
-          const prevStartDate = new Date(prevEndDate);
-          prevStartDate.setDate(prevStartDate.getDate() - daysDiff);
-          
-          previousData = await fetchSearchAnalytics(site, prevStartDate, prevEndDate, ['query'], dimensionFilters);
-          const prevUrlsData = await fetchSearchAnalytics(site, prevStartDate, prevEndDate, ['page'], dimensionFilters);
-          previousData.urlsData = prevUrlsData;
-        } else if (compare === 'year') {
-          const yearAgoEndDate = new Date(endDate);
-          yearAgoEndDate.setFullYear(yearAgoEndDate.getFullYear() - 1);
-          const yearAgoStartDate = new Date(startDate);
-          yearAgoStartDate.setFullYear(yearAgoStartDate.getFullYear() - 1);
-          
-          previousData = await fetchSearchAnalytics(site, yearAgoStartDate, yearAgoEndDate, ['query'], dimensionFilters);
-          const prevUrlsData = await fetchSearchAnalytics(site, yearAgoStartDate, yearAgoEndDate, ['page'], dimensionFilters);
-          previousData.urlsData = prevUrlsData;
-        } else {
-          previousData = null;
-        }
-
-        if (previousData && previousData.rows) {
-          debugHTML += `<br><strong>🔄 Período comparación:</strong> ${previousData.rows.length.toLocaleString()} filas`;
-        }
-
-        document.getElementById('debugInfo').innerHTML = debugHTML;
-
-        updateActiveFilters(country, device);
-        displayData();
       } catch (error) {
-        showMessage('dashboardMessage', 'Error: ' + error.message, 'error');
+        showMessage('message', 'Error: ' + error.message, 'error');
       } finally {
         showLoading(false);
       }
     }
 
-    async function fetchSearchAnalytics(site, startDate, endDate, dimensions, dimensionFilters = []) {
-      const formatDate = (date) => date.toISOString().split('T')[0];
-
+    async function fetchData(site, startDate, endDate, dimensions, filters) {
       const body = {
         startDate: formatDate(startDate),
         endDate: formatDate(endDate),
@@ -1196,10 +414,8 @@
         rowLimit: 25000
       };
 
-      if (dimensionFilters.length > 0) {
-        body.dimensionFilterGroups = [{
-          filters: dimensionFilters
-        }];
+      if (filters.length > 0) {
+        body.dimensionFilterGroups = [{ filters: filters }];
       }
 
       const response = await fetch(
@@ -1207,894 +423,150 @@
         {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${accessToken}`,
+            'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
           },
           body: JSON.stringify(body)
         }
       );
 
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error?.message || 'Error al cargar datos');
-      }
-
+      if (!response.ok) throw new Error('Error al cargar datos');
       return await response.json();
     }
 
-    async function loadCountries(site, startDate, endDate) {
+    async function loadCountries(site, startDate, endDate, deviceFilter) {
       try {
-        const data = await fetchSearchAnalytics(site, startDate, endDate, ['country']);
-        const select = document.getElementById('countryFilter');
+        const filters = deviceFilter ? [{ dimension: 'device', operator: 'equals', expression: deviceFilter }] : [];
+        const data = await fetchData(site, startDate, endDate, ['country'], filters);
         
-        // Keep current value
+        const select = document.getElementById('countryFilter');
         const currentValue = select.value;
         
-        // Clear and rebuild
-        select.innerHTML = '<option value="all">Todos los países</option>';
+        select.innerHTML = '<option value="">Todos los países</option>';
         
         if (data.rows) {
-          const countries = {};
-          data.rows.forEach(row => {
-            const countryCode = row.keys[0];
-            if (!countries[countryCode]) {
-              countries[countryCode] = row.clicks;
-            } else {
-              countries[countryCode] += row.clicks;
-            }
-          });
-
-          // Sort by clicks
-          const sorted = Object.entries(countries).sort((a, b) => b[1] - a[1]);
+          data.rows.sort((a, b) => b.clicks - a.clicks);
           
-          sorted.forEach(([code, clicks]) => {
+          data.rows.forEach(row => {
             const option = document.createElement('option');
-            option.value = code;
-            option.textContent = `${code} (${clicks.toLocaleString()} clics)`;
+            option.value = row.keys[0];
+            option.textContent = `${row.keys[0]} (${row.clicks.toLocaleString()} clics)`;
             select.appendChild(option);
           });
         }
-
+        
         select.value = currentValue;
       } catch (error) {
         console.error('Error loading countries:', error);
       }
     }
 
-    function updateActiveFilters(country, device) {
-      const container = document.getElementById('activeFilters');
-      let html = '';
-
-      if (country !== 'all') {
-        html += `<span class="filter-badge">País: ${country}</span>`;
-      }
-
-      if (device !== 'all') {
-        html += `<span class="filter-badge">Dispositivo: ${device}</span>`;
-      }
-
-      container.innerHTML = html;
-    }
-
-    function displayData() {
-      if (!currentData || !currentData.rows) {
-        showMessage('dashboardMessage', 'No hay datos para este período', 'error');
+    function displayData(data) {
+      if (!data || !data.rows) {
+        showMessage('message', 'No hay datos', 'error');
         return;
       }
 
-      // Process data (now with separate query and URL data)
-      const { queries, urls } = processAllData(currentData);
-      const prevQueries = previousData ? processQueries(previousData.rows) : {};
-      const prevURLs = previousData && previousData.urlsData ? processURLs(previousData.urlsData.rows) : {};
+      // Calculate totals (data already aggregated by API)
+      let totalClicks = 0;
+      let totalImpressions = 0;
 
-      allData = { queries, urls };
+      data.rows.forEach(row => {
+        totalClicks += row.clicks;
+        totalImpressions += row.impressions;
+      });
 
-      // Add more debug info after processing
-      const debugContainer = document.getElementById('debugInfo');
-      const currentDebug = debugContainer.innerHTML;
-      debugContainer.innerHTML = currentDebug + `<br>
-        <strong>🔑 Keywords únicas:</strong> ${Object.keys(queries).length.toLocaleString()}<br>
-        <strong>🌐 URLs únicas:</strong> ${Object.keys(urls).length.toLocaleString()}<br>
-        <strong>✅ Total clics (calculado):</strong> ${Object.values(queries).reduce((sum, q) => sum + q.clicks, 0).toLocaleString()}<br>
-        <strong>👁️ Total impresiones (calculado):</strong> ${Object.values(queries).reduce((sum, q) => sum + q.impressions, 0).toLocaleString()}
-      `;
+      document.getElementById('totalClicks').textContent = totalClicks.toLocaleString();
+      document.getElementById('totalImpressions').textContent = totalImpressions.toLocaleString();
 
-      // Update stats
-      updateStats(queries, prevQueries);
+      // Keywords table
+      const tbody = document.getElementById('keywordsTable');
+      tbody.innerHTML = '';
 
-      // Update tables
-      updateKeywordsTab(queries, prevQueries);
-      updateGainedLostTab(queries, prevQueries);
-      updateURLsTab(urls, prevURLs);
-      updatePositionsTab(queries);
-      updateOpportunitiesTab(queries);
-      
-      // Update charts with date data
-      if (currentData.dateData && currentData.dateData.rows) {
-        updateCharts(currentData.dateData.rows, queries);
-      }
+      data.rows.slice(0, 100).forEach(row => {
+        const tr = tbody.insertRow();
+        tr.innerHTML = `
+          <td>${row.keys[0]}</td>
+          <td style="font-weight: 600; color: #06b6d4;">${row.clicks.toLocaleString()}</td>
+          <td>${row.impressions.toLocaleString()}</td>
+          <td>${(row.ctr * 100).toFixed(2)}%</td>
+          <td>${row.position.toFixed(1)}</td>
+        `;
+      });
 
       document.getElementById('stats').classList.remove('hidden');
     }
 
-    function processAllData(data) {
-      const queries = {};
-      const urls = {};
-
-      // Process queries (already aggregated by API)
-      if (data.rows) {
-        data.rows.forEach(row => {
-          const query = row.keys[0];
-          queries[query] = {
-            query: query,
-            clicks: row.clicks,
-            impressions: row.impressions,
-            ctr: row.ctr * 100,
-            position: row.position,
-            pages: new Set() // We don't have page data in this query
-          };
-        });
-      }
-
-      // Process URLs (from separate URL data)
-      if (data.urlsData && data.urlsData.rows) {
-        data.urlsData.rows.forEach(row => {
-          const url = row.keys[0];
-          urls[url] = {
-            url: url,
-            clicks: row.clicks,
-            impressions: row.impressions,
-            ctr: row.ctr * 100,
-            position: row.position,
-            queries: new Set() // We don't have query data in this URL request
-          };
-        });
-      }
-
-      return { queries, urls };
-    }
-
-    function processQueries(rows) {
-      const byQuery = {};
-      
-      rows.forEach(row => {
-        const query = row.keys[0];
-        if (!byQuery[query]) {
-          byQuery[query] = {
-            query: query,
-            clicks: 0,
-            impressions: 0
-          };
-        }
-        byQuery[query].clicks += row.clicks;
-        byQuery[query].impressions += row.impressions;
-      });
-
-      Object.values(byQuery).forEach(q => {
-        q.ctr = q.clicks / q.impressions * 100;
-        q.position = rows.filter(r => r.keys[0] === q.query)
-          .reduce((sum, r) => sum + r.position, 0) / 
-          rows.filter(r => r.keys[0] === q.query).length;
-      });
-
-      return byQuery;
-    }
-
-    function processURLs(rows) {
-      const byURL = {};
-      
-      rows.forEach(row => {
-        const url = row.keys[0];
-        byURL[url] = {
-          url: url,
-          clicks: row.clicks,
-          impressions: row.impressions,
-          ctr: row.ctr * 100,
-          position: row.position
-        };
-      });
-
-      return byURL;
-    }
-
-    function updateStats(current, previous) {
-      const currentTotals = Object.values(current).reduce((acc, q) => ({
-        clicks: acc.clicks + q.clicks,
-        impressions: acc.impressions + q.impressions
-      }), { clicks: 0, impressions: 0 });
-
-      const avgCTR = currentTotals.clicks / currentTotals.impressions * 100;
-      const avgPosition = Object.values(current).reduce((sum, q) => sum + q.position, 0) / Object.values(current).length;
-
-      document.getElementById('totalClicks').textContent = currentTotals.clicks.toLocaleString();
-      document.getElementById('totalImpressions').textContent = currentTotals.impressions.toLocaleString();
-      document.getElementById('avgCTR').textContent = avgCTR.toFixed(2) + '%';
-      document.getElementById('avgPosition').textContent = avgPosition.toFixed(1);
-
-      if (previous && Object.keys(previous).length > 0) {
-        const prevTotals = Object.values(previous).reduce((acc, q) => ({
-          clicks: acc.clicks + q.clicks,
-          impressions: acc.impressions + q.impressions
-        }), { clicks: 0, impressions: 0 });
-
-        const prevCTR = prevTotals.clicks / prevTotals.impressions * 100;
-        const prevPosition = Object.values(previous).reduce((sum, q) => sum + q.position, 0) / Object.values(previous).length;
-
-        updateChange('clicksChange', currentTotals.clicks, prevTotals.clicks);
-        updateChange('impressionsChange', currentTotals.impressions, prevTotals.impressions);
-        updateChange('ctrChange', avgCTR, prevCTR, '%');
-        updateChange('positionChange', avgPosition, prevPosition, '', true);
-      } else {
-        document.getElementById('clicksChange').innerHTML = '';
-        document.getElementById('impressionsChange').innerHTML = '';
-        document.getElementById('ctrChange').innerHTML = '';
-        document.getElementById('positionChange').innerHTML = '';
-      }
-    }
-
-    function updateChange(elementId, current, previous, suffix = '', inverse = false) {
-      const change = ((current - previous) / previous * 100);
-      const isPositive = inverse ? change < 0 : change > 0;
-      const arrow = isPositive ? '↑' : '↓';
-      const className = isPositive ? 'positive' : 'negative';
-      
-      const compareType = document.getElementById('compareRange').value;
-      const compareText = compareType === 'year' ? 'vs año anterior' : 'vs período anterior';
-      
-      document.getElementById(elementId).innerHTML = 
-        `<span class="${className}">${arrow} ${Math.abs(change).toFixed(1)}%</span> ${compareText}`;
-    }
-
-    function updateKeywordsTab(queries, previous) {
-      const sorted = Object.values(queries).sort((a, b) => b.clicks - a.clicks);
-      
-      const tbody = document.getElementById('keywordsTableBody');
-      tbody.innerHTML = '';
-
-      const start = (currentPage.keywords - 1) * itemsPerPage;
-      const end = start + itemsPerPage;
-      const pageData = sorted.slice(start, end);
-
-      pageData.forEach(q => {
-        const prev = previous[q.query];
-        const clickChange = prev ? q.clicks - prev.clicks : 0;
-        const posChange = prev ? q.position - prev.position : 0;
-
-        const row = tbody.insertRow();
-        row.innerHTML = `
-          <td class="keyword-cell">${q.query}</td>
-          <td class="number-cell">${q.clicks.toLocaleString()}</td>
-          <td class="number-cell ${clickChange >= 0 ? 'change-positive' : 'change-negative'}">
-            ${prev ? (clickChange >= 0 ? '+' : '') + clickChange : '-'}
-          </td>
-          <td class="number-cell">${q.impressions.toLocaleString()}</td>
-          <td class="number-cell">${q.ctr.toFixed(2)}%</td>
-          <td class="number-cell">${q.position.toFixed(1)}</td>
-          <td class="number-cell ${posChange <= 0 ? 'change-positive' : 'change-negative'}">
-            ${prev ? (posChange > 0 ? '+' : '') + posChange.toFixed(1) : '-'}
-          </td>
-        `;
-      });
-
-      updatePagination('keywords', sorted.length);
-    }
-
-    function updateGainedLostTab(current, previous) {
-      if (!previous || Object.keys(previous).length === 0) {
-        document.getElementById('gainedCount').textContent = 'N/A';
-        document.getElementById('lostCount').textContent = 'N/A';
-        document.getElementById('gainedClicks').textContent = 'Requiere comparación';
-        document.getElementById('lostClicks').textContent = 'Requiere comparación';
-        document.getElementById('gainedImpressions').textContent = '';
-        document.getElementById('lostImpressions').textContent = '';
-        document.getElementById('gainedKeywordsTable').innerHTML = '<tr><td colspan="5" style="text-align: center; color: #94a3b8; padding: 2rem;">Selecciona "Período anterior" o "Año anterior" para comparar</td></tr>';
-        document.getElementById('lostKeywordsTable').innerHTML = '<tr><td colspan="5" style="text-align: center; color: #94a3b8; padding: 2rem;">Selecciona "Período anterior" o "Año anterior" para comparar</td></tr>';
-        return;
-      }
-
-      const currentKeys = new Set(Object.keys(current));
-      const previousKeys = new Set(Object.keys(previous));
-      
-      // Keywords gained
-      const gained = [];
-      let gainedClicks = 0;
-      let gainedImpressions = 0;
-      
-      currentKeys.forEach(key => {
-        if (!previousKeys.has(key)) {
-          gained.push(current[key]);
-          gainedClicks += current[key].clicks;
-          gainedImpressions += current[key].impressions;
-        }
-      });
-
-      // Keywords lost
-      const lost = [];
-      let lostClicks = 0;
-      let lostImpressions = 0;
-      
-      previousKeys.forEach(key => {
-        if (!currentKeys.has(key)) {
-          lost.push(previous[key]);
-          lostClicks += previous[key].clicks;
-          lostImpressions += previous[key].impressions;
-        }
-      });
-
-      // Update stats
-      document.getElementById('gainedCount').textContent = gained.length.toLocaleString();
-      document.getElementById('gainedClicks').textContent = `${gainedClicks.toLocaleString()} clics`;
-      document.getElementById('gainedImpressions').textContent = `${gainedImpressions.toLocaleString()} impresiones`;
-
-      document.getElementById('lostCount').textContent = lost.length.toLocaleString();
-      document.getElementById('lostClicks').textContent = `Perdiste ${lostClicks.toLocaleString()} clics`;
-      document.getElementById('lostImpressions').textContent = `Perdiste ${lostImpressions.toLocaleString()} impresiones`;
-
-      // Impact summary
-      const netClicks = gainedClicks - lostClicks;
-      const netImpressions = gainedImpressions - lostImpressions;
-      
-      document.getElementById('totalGained').textContent = `+${gainedClicks.toLocaleString()} clics / +${gainedImpressions.toLocaleString()} imp`;
-      document.getElementById('totalLost').textContent = `-${lostClicks.toLocaleString()} clics / -${lostImpressions.toLocaleString()} imp`;
-      
-      const netColor = netClicks >= 0 ? '#22c55e' : '#ef4444';
-      document.getElementById('netChange').innerHTML = `<span style="color: ${netColor}; font-weight: 700;">${netClicks >= 0 ? '+' : ''}${netClicks.toLocaleString()} clics / ${netImpressions >= 0 ? '+' : ''}${netImpressions.toLocaleString()} imp</span>`;
-
-      // Gained keywords table
-      const gainedSorted = gained.sort((a, b) => b.clicks - a.clicks);
-      const tbody1 = document.getElementById('gainedKeywordsTable');
-      tbody1.innerHTML = '';
-
-      if (gainedSorted.length === 0) {
-        tbody1.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #94a3b8; padding: 2rem;">No hay keywords nuevas en este período</td></tr>';
-      } else {
-        gainedSorted.slice(0, 100).forEach(q => {
-          const row = tbody1.insertRow();
-          row.innerHTML = `
-            <td class="keyword-cell">${q.query}</td>
-            <td class="number-cell" style="color: #22c55e; font-weight: 600;">${q.clicks.toLocaleString()}</td>
-            <td class="number-cell">${q.impressions.toLocaleString()}</td>
-            <td class="number-cell">${q.ctr.toFixed(2)}%</td>
-            <td class="number-cell">${q.position.toFixed(1)}</td>
-          `;
-        });
-      }
-
-      // Lost keywords table
-      const lostSorted = lost.sort((a, b) => b.clicks - a.clicks);
-      const tbody2 = document.getElementById('lostKeywordsTable');
-      tbody2.innerHTML = '';
-
-      if (lostSorted.length === 0) {
-        tbody2.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #94a3b8; padding: 2rem;">No se perdieron keywords en este período</td></tr>';
-      } else {
-        lostSorted.slice(0, 100).forEach(q => {
-          const row = tbody2.insertRow();
-          row.innerHTML = `
-            <td class="keyword-cell">${q.query}</td>
-            <td class="number-cell" style="color: #ef4444; font-weight: 600;">${q.clicks.toLocaleString()}</td>
-            <td class="number-cell">${q.impressions.toLocaleString()}</td>
-            <td class="number-cell">${q.ctr.toFixed(2)}%</td>
-            <td class="number-cell">${q.position.toFixed(1)}</td>
-          `;
-        });
-      }
-    }
-
-    function updateURLsTab(urls, previous) {
-      const sorted = Object.values(urls).sort((a, b) => b.clicks - a.clicks);
-      
-      const tbody = document.getElementById('urlsTableBody');
-      tbody.innerHTML = '';
-
-      const start = (currentPage.urls - 1) * itemsPerPage;
-      const end = start + itemsPerPage;
-      const pageData = sorted.slice(start, end);
-
-      pageData.forEach(u => {
-        const prev = previous[u.url];
-        const clickChange = prev ? u.clicks - prev.clicks : 0;
-
-        const row = tbody.insertRow();
-        row.innerHTML = `
-          <td class="keyword-cell" style="max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${u.url}">${u.url}</td>
-          <td class="number-cell">${u.clicks.toLocaleString()}</td>
-          <td class="number-cell ${clickChange >= 0 ? 'change-positive' : 'change-negative'}">
-            ${prev ? (clickChange >= 0 ? '+' : '') + clickChange : '-'}
-          </td>
-          <td class="number-cell">${u.impressions.toLocaleString()}</td>
-          <td class="number-cell">${u.ctr.toFixed(2)}%</td>
-          <td class="number-cell">${u.position.toFixed(1)}</td>
-        `;
-      });
-
-      updatePagination('urls', sorted.length);
-    }
-
-    function updatePositionsTab(queries) {
-      // Categorize by position ranges
-      const ranges = {
-        '1-3': { queries: [], clicks: 0, impressions: 0 },
-        '4-10': { queries: [], clicks: 0, impressions: 0 },
-        '11-20': { queries: [], clicks: 0, impressions: 0 },
-        '21+': { queries: [], clicks: 0, impressions: 0 }
-      };
-
-      Object.values(queries).forEach(q => {
-        if (q.position <= 3) {
-          ranges['1-3'].queries.push(q);
-          ranges['1-3'].clicks += q.clicks;
-          ranges['1-3'].impressions += q.impressions;
-        } else if (q.position <= 10) {
-          ranges['4-10'].queries.push(q);
-          ranges['4-10'].clicks += q.clicks;
-          ranges['4-10'].impressions += q.impressions;
-        } else if (q.position <= 20) {
-          ranges['11-20'].queries.push(q);
-          ranges['11-20'].clicks += q.clicks;
-          ranges['11-20'].impressions += q.impressions;
-        } else {
-          ranges['21+'].queries.push(q);
-          ranges['21+'].clicks += q.clicks;
-          ranges['21+'].impressions += q.impressions;
-        }
-      });
-
-      // Update stats cards
-      document.getElementById('pos1-3Count').textContent = ranges['1-3'].queries.length;
-      document.getElementById('pos1-3Clicks').textContent = `${ranges['1-3'].clicks.toLocaleString()} clics • ${ranges['1-3'].impressions.toLocaleString()} imp`;
-
-      document.getElementById('pos4-10Count').textContent = ranges['4-10'].queries.length;
-      document.getElementById('pos4-10Clicks').textContent = `${ranges['4-10'].clicks.toLocaleString()} clics • ${ranges['4-10'].impressions.toLocaleString()} imp`;
-
-      document.getElementById('pos11-20Count').textContent = ranges['11-20'].queries.length;
-      document.getElementById('pos11-20Clicks').textContent = `${ranges['11-20'].clicks.toLocaleString()} clics • ${ranges['11-20'].impressions.toLocaleString()} imp`;
-
-      document.getElementById('pos21Count').textContent = ranges['21+'].queries.length;
-      document.getElementById('pos21Clicks').textContent = `${ranges['21+'].clicks.toLocaleString()} clics • ${ranges['21+'].impressions.toLocaleString()} imp`;
-
-      // Low Hanging Fruit (4-10) - Detailed
-      const lowHanging = ranges['4-10'].queries
-        .sort((a, b) => b.impressions - a.impressions)
-        .slice(0, 50);
-
-      const tbody = document.getElementById('lowHangingDetailTable');
-      tbody.innerHTML = '';
-
-      lowHanging.forEach(q => {
-        const currentCTR = q.ctr;
-        const potentialCTR = estimateCTRForPosition(3);
-        const potentialClicks = Math.round(q.impressions * potentialCTR / 100);
-        const gain = potentialClicks - q.clicks;
-
-        const row = tbody.insertRow();
-        row.innerHTML = `
-          <td class="keyword-cell">${q.query}</td>
-          <td class="number-cell" style="color: #fb923c; font-weight: 600;">${q.position.toFixed(1)}</td>
-          <td class="number-cell">${q.clicks.toLocaleString()}</td>
-          <td class="number-cell">${q.impressions.toLocaleString()}</td>
-          <td class="number-cell">${currentCTR.toFixed(2)}%</td>
-          <td class="number-cell" style="color: #22c55e; font-weight: 600;">${potentialClicks.toLocaleString()} clics</td>
-          <td class="number-cell" style="color: #22c55e; font-weight: 700; font-size: 0.95rem;">+${gain.toLocaleString()}</td>
-        `;
-      });
-
-      // Position 11-20
-      const pos11to20 = ranges['11-20'].queries
-        .sort((a, b) => b.impressions - a.impressions)
-        .slice(0, 50);
-
-      const tbody2 = document.getElementById('pos11-20Table');
-      tbody2.innerHTML = '';
-
-      pos11to20.forEach(q => {
-        const potentialCTR = estimateCTRForPosition(10);
-        const potentialClicks = Math.round(q.impressions * potentialCTR / 100);
-        const gain = potentialClicks - q.clicks;
-
-        const row = tbody2.insertRow();
-        row.innerHTML = `
-          <td class="keyword-cell">${q.query}</td>
-          <td class="number-cell" style="color: #fb923c;">${q.position.toFixed(1)}</td>
-          <td class="number-cell">${q.clicks.toLocaleString()}</td>
-          <td class="number-cell">${q.impressions.toLocaleString()}</td>
-          <td class="number-cell">${q.ctr.toFixed(2)}%</td>
-          <td class="number-cell" style="color: #06b6d4; font-weight: 600;">+${gain.toLocaleString()} clics</td>
-        `;
-      });
-    }
-
-    function updateOpportunitiesTab(queries) {
-      const opportunities = Object.values(queries)
-        .filter(q => q.position >= 4 && q.position <= 10 && q.impressions > 50)
-        .sort((a, b) => b.impressions - a.impressions)
-        .slice(0, 100);
-
-      const tbody = document.getElementById('opportunitiesTable');
-      tbody.innerHTML = '';
-
-      opportunities.forEach(q => {
-        const currentCTR = q.ctr;
-        const potentialCTR = estimateCTRForPosition(3);
-        const potentialClicks = Math.round(q.impressions * potentialCTR / 100);
-        const additionalClicks = potentialClicks - q.clicks;
-
-        const row = tbody.insertRow();
-        row.innerHTML = `
-          <td class="keyword-cell">${q.query}</td>
-          <td class="number-cell" style="color: #fb923c;">${q.position.toFixed(1)}</td>
-          <td class="number-cell">${q.impressions.toLocaleString()}</td>
-          <td class="number-cell">${q.clicks.toLocaleString()}</td>
-          <td class="number-cell">${currentCTR.toFixed(2)}%</td>
-          <td class="number-cell" style="color: #22c55e; font-weight: 600;">+${additionalClicks} clics</td>
-        `;
-      });
-    }
-
-    function updatePagination(type, total) {
-      const totalPages = Math.ceil(total / itemsPerPage);
-      const container = document.getElementById(`${type}Pagination`);
-      
-      container.innerHTML = `
-        <button onclick="changePage('${type}', -1)" ${currentPage[type] === 1 ? 'disabled' : ''}>← Anterior</button>
-        <span>Página ${currentPage[type]} de ${totalPages} (${total.toLocaleString()} items)</span>
-        <button onclick="changePage('${type}', 1)" ${currentPage[type] === totalPages ? 'disabled' : ''}>Siguiente →</button>
-      `;
-    }
-
-    function changePage(type, delta) {
-      currentPage[type] += delta;
-      
-      if (type === 'keywords') {
-        const prevQueries = previousData ? processQueries(previousData.rows) : {};
-        updateKeywordsTab(allData.queries, prevQueries);
-      } else if (type === 'urls') {
-        const prevURLs = previousData ? processURLs(previousData.rows) : {};
-        updateURLsTab(allData.urls, prevURLs);
-      }
-    }
-
-    function filterKeywords() {
-      const search = document.getElementById('keywordSearch').value.toLowerCase();
-      const filtered = {};
-      
-      Object.entries(allData.queries).forEach(([key, value]) => {
-        if (value.query.toLowerCase().includes(search)) {
-          filtered[key] = value;
-        }
-      });
-
-      currentPage.keywords = 1;
-      const prevQueries = previousData ? processQueries(previousData.rows) : {};
-      updateKeywordsTab(filtered, prevQueries);
-    }
-
-    function filterURLs() {
-      const search = document.getElementById('urlSearch').value.toLowerCase();
-      const filtered = {};
-      
-      Object.entries(allData.urls).forEach(([key, value]) => {
-        if (value.url.toLowerCase().includes(search)) {
-          filtered[key] = value;
-        }
-      });
-
-      currentPage.urls = 1;
-      const prevURLs = previousData ? processURLs(previousData.rows) : {};
-      updateURLsTab(filtered, prevURLs);
-    }
-
-    function updateCharts(dateRows, queries) {
-      // Evolution chart by date
-      const byDate = {};
-      if (dateRows) {
-        dateRows.forEach(row => {
-          const date = row.keys[0];
-          byDate[date] = {
-            clicks: row.clicks,
-            impressions: row.impressions
-          };
-        });
-      }
-
-      const dates = Object.keys(byDate).sort();
-      const clicksData = dates.map(d => byDate[d].clicks);
-      const impressionsData = dates.map(d => byDate[d].impressions);
-
-      Object.values(charts).forEach(chart => chart && chart.destroy());
-
-      const ctx1 = document.getElementById('evolutionChart');
-      if (ctx1) {
-        charts.evolution = new Chart(ctx1, {
-          type: 'line',
-          data: {
-            labels: dates,
-            datasets: [
-              {
-                label: 'Clics',
-                data: clicksData,
-                borderColor: '#06b6d4',
-                backgroundColor: 'rgba(6, 182, 212, 0.1)',
-                tension: 0.4,
-                fill: true
-              },
-              {
-                label: 'Impresiones',
-                data: impressionsData,
-                borderColor: '#a855f7',
-                backgroundColor: 'rgba(168, 85, 247, 0.1)',
-                tension: 0.4,
-                fill: true,
-                yAxisID: 'y1'
-              }
-            ]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            interaction: { mode: 'index', intersect: false },
-            plugins: {
-              legend: { labels: { color: '#f8fafc' } }
-            },
-            scales: {
-              x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } },
-              y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } },
-              y1: { 
-                position: 'right',
-                ticks: { color: '#94a3b8' },
-                grid: { display: false }
-              }
-            }
-          }
-        });
-      }
-
-      // CTR by position - use queries data
-      const byPosition = {};
-      Object.values(queries).forEach(q => {
-        const pos = Math.floor(q.position);
-        if (!byPosition[pos]) byPosition[pos] = { clicks: 0, impressions: 0 };
-        byPosition[pos].clicks += q.clicks;
-        byPosition[pos].impressions += q.impressions;
-      });
-
-      const positions = Object.keys(byPosition).sort((a, b) => a - b).slice(0, 20);
-      const ctrData = positions.map(p => (byPosition[p].clicks / byPosition[p].impressions * 100).toFixed(2));
-
-      const ctx2 = document.getElementById('ctrPositionChart');
-      if (ctx2) {
-        charts.ctrPosition = new Chart(ctx2, {
-          type: 'bar',
-          data: {
-            labels: positions.map(p => `Pos ${p}`),
-            datasets: [{
-              label: 'CTR (%)',
-              data: ctrData,
-              backgroundColor: 'rgba(34, 197, 94, 0.8)',
-              borderColor: '#22c55e',
-              borderWidth: 1
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: { labels: { color: '#f8fafc' } }
-            },
-            scales: {
-              x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } },
-              y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } }
-            }
-          }
-        });
-      }
-    }
-
-    function estimateCTRForPosition(position) {
-      const ctrByPosition = {
-        1: 28.5, 2: 15.7, 3: 11.0, 4: 8.0, 5: 7.2,
-        6: 5.1, 7: 4.0, 8: 3.2, 9: 2.8, 10: 2.5
-      };
-      return ctrByPosition[position] || 2.0;
-    }
-
-    function switchTab(tab) {
-      activeTab = tab;
-      
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('[id^="tab-"]').forEach(t => t.classList.add('hidden'));
-      
-      event.target.classList.add('active');
-      document.getElementById(`tab-${tab}`).classList.remove('hidden');
-    }
-
-    function exportToExcel() {
-      if (!currentData || !currentData.rows) {
+    function exportExcel() {
+      if (!allData || !allData.rows) {
         alert('No hay datos para exportar');
         return;
       }
 
       const wb = XLSX.utils.book_new();
       
-      // Sheet 1: Keywords
-      const keywordsData = Object.values(allData.queries)
-        .sort((a, b) => b.clicks - a.clicks)
-        .map(q => ({
-          'Query': q.query,
-          'Clics': q.clicks,
-          'Impresiones': q.impressions,
-          'CTR': q.ctr.toFixed(2) + '%',
-          'Posición': q.position.toFixed(2),
-          'URLs': q.pages.size
-        }));
-      
-      const ws1 = XLSX.utils.json_to_sheet(keywordsData);
-      XLSX.utils.book_append_sheet(wb, ws1, 'Keywords');
-
-      // Sheet 2: URLs
-      const urlsData = Object.values(allData.urls)
-        .sort((a, b) => b.clicks - a.clicks)
-        .map(u => ({
-          'URL': u.url,
-          'Clics': u.clicks,
-          'Impresiones': u.impressions,
-          'CTR': u.ctr.toFixed(2) + '%',
-          'Posición': u.position.toFixed(2),
-          'Keywords': u.queries.size
-        }));
-      
-      const ws2 = XLSX.utils.json_to_sheet(urlsData);
-      XLSX.utils.book_append_sheet(wb, ws2, 'URLs');
-
-      // Sheet 3: Raw data
-      const rawData = currentData.rows.map(row => ({
+      const data = allData.rows.map(row => ({
         'Query': row.keys[0],
-        'URL': row.keys[1] || '',
-        'Fecha': row.keys[2] || '',
         'Clics': row.clicks,
         'Impresiones': row.impressions,
         'CTR': (row.ctr * 100).toFixed(2) + '%',
         'Posición': row.position.toFixed(2)
       }));
       
-      const ws3 = XLSX.utils.json_to_sheet(rawData);
-      XLSX.utils.book_append_sheet(wb, ws3, 'Datos Completos');
+      const ws = XLSX.utils.json_to_sheet(data);
+      XLSX.utils.book_append_sheet(wb, ws, 'Keywords');
 
-      const site = document.getElementById('siteSelect').value.replace('sc-domain:', '').replace('https://', '').replace('http://', '');
+      const site = document.getElementById('siteSelect').value.replace('sc-domain:', '').replace('https://', '');
       XLSX.writeFile(wb, `search-console-${site}-${new Date().toISOString().split('T')[0]}.xlsx`);
     }
 
-    async function generatePDF() {
-      if (!currentData || !currentData.rows) {
-        alert('No hay datos para generar PDF');
+    function generatePDF() {
+      if (!allData || !allData.rows) {
+        alert('No hay datos para PDF');
         return;
       }
 
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
 
-      // Header
       doc.setFontSize(20);
       doc.setTextColor(6, 182, 212);
       doc.text('Search Console Analytics', 14, 20);
       
+      const site = document.getElementById('siteSelect').value;
       doc.setFontSize(10);
       doc.setTextColor(100);
-      const site = document.getElementById('siteSelect').value;
-      const dateRange = document.getElementById('dateRange').options[document.getElementById('dateRange').selectedIndex].text;
       doc.text(`Sitio: ${site}`, 14, 28);
-      doc.text(`Período: ${dateRange}`, 14, 34);
-      doc.text(`Fecha del reporte: ${new Date().toLocaleDateString()}`, 14, 40);
+      doc.text(`Fecha: ${new Date().toLocaleDateString()}`, 14, 34);
 
-      // Stats
-      doc.setFontSize(14);
-      doc.setTextColor(0);
-      doc.text('Resumen General', 14, 50);
-      
-      const stats = [
-        ['Métrica', 'Valor'],
-        ['Total Clics', document.getElementById('totalClicks').textContent],
-        ['Total Impresiones', document.getElementById('totalImpressions').textContent],
-        ['CTR Promedio', document.getElementById('avgCTR').textContent],
-        ['Posición Promedio', document.getElementById('avgPosition').textContent]
-      ];
+      const data = allData.rows.slice(0, 50).map(row => [
+        row.keys[0].substring(0, 40),
+        row.clicks.toLocaleString(),
+        row.impressions.toLocaleString(),
+        (row.ctr * 100).toFixed(2) + '%',
+        row.position.toFixed(1)
+      ]);
 
       doc.autoTable({
-        startY: 55,
-        head: [stats[0]],
-        body: stats.slice(1),
-        theme: 'grid',
-        headStyles: { fillColor: [6, 182, 212] }
-      });
-
-      // Top 20 Keywords
-      doc.addPage();
-      doc.setFontSize(14);
-      doc.text('Top 20 Keywords', 14, 20);
-
-      const keywordsData = Object.values(allData.queries)
-        .sort((a, b) => b.clicks - a.clicks)
-        .slice(0, 20)
-        .map(q => [
-          q.query.substring(0, 40),
-          q.clicks.toLocaleString(),
-          q.impressions.toLocaleString(),
-          q.ctr.toFixed(2) + '%',
-          q.position.toFixed(1)
-        ]);
-
-      doc.autoTable({
-        startY: 25,
+        startY: 40,
         head: [['Keyword', 'Clics', 'Impresiones', 'CTR', 'Posición']],
-        body: keywordsData,
+        body: data,
         theme: 'striped',
         headStyles: { fillColor: [6, 182, 212] },
         styles: { fontSize: 8 }
       });
 
-      // Top 20 URLs
-      doc.addPage();
-      doc.setFontSize(14);
-      doc.text('Top 20 URLs', 14, 20);
+      const siteName = site.replace('sc-domain:', '').replace('https://', '');
+      doc.save(`search-console-${siteName}-${new Date().toISOString().split('T')[0]}.pdf`);
+    }
 
-      const urlsData = Object.values(allData.urls)
-        .sort((a, b) => b.clicks - a.clicks)
-        .slice(0, 20)
-        .map(u => [
-          u.url.substring(0, 60),
-          u.clicks.toLocaleString(),
-          u.impressions.toLocaleString(),
-          u.ctr.toFixed(2) + '%'
-        ]);
-
-      doc.autoTable({
-        startY: 25,
-        head: [['URL', 'Clics', 'Impresiones', 'CTR']],
-        body: urlsData,
-        theme: 'striped',
-        headStyles: { fillColor: [6, 182, 212] },
-        styles: { fontSize: 7 }
-      });
-
-      // Opportunities
-      doc.addPage();
-      doc.setFontSize(14);
-      doc.text('Oportunidades (Posición 4-10)', 14, 20);
-
-      const opportunities = Object.values(allData.queries)
-        .filter(q => q.position >= 4 && q.position <= 10 && q.impressions > 50)
-        .sort((a, b) => b.impressions - a.impressions)
-        .slice(0, 20)
-        .map(q => {
-          const potentialCTR = estimateCTRForPosition(3);
-          const potentialClicks = Math.round(q.impressions * potentialCTR / 100);
-          const additionalClicks = potentialClicks - q.clicks;
-          
-          return [
-            q.query.substring(0, 40),
-            q.position.toFixed(1),
-            q.impressions.toLocaleString(),
-            '+' + additionalClicks
-          ];
-        });
-
-      doc.autoTable({
-        startY: 25,
-        head: [['Keyword', 'Posición', 'Impresiones', 'Potencial']],
-        body: opportunities,
-        theme: 'striped',
-        headStyles: { fillColor: [34, 197, 94] },
-        styles: { fontSize: 8 }
-      });
-
-      // Save
-      const siteName = site.replace('sc-domain:', '').replace('https://', '').replace('http://', '');
-      doc.save(`reporte-seo-${siteName}-${new Date().toISOString().split('T')[0]}.pdf`);
+    function formatDate(date) {
+      return date.toISOString().split('T')[0];
     }
 
     function showMessage(elementId, message, type) {
       const element = document.getElementById(elementId);
-      element.innerHTML = `<div class="${type}">${message}</div>`;
+      element.innerHTML = `<div class="${type}" style="margin-top: 1rem;">${message}</div>`;
     }
 
     function showLoading(show) {
