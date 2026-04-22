@@ -1100,13 +1100,11 @@
         // Calculate days for comparison FIRST
         const daysDiff = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24));
 
-        // Build dimensions - ONLY include country/device when filtering
-        const dimensions = ['query', 'page', 'date'];
+        // Request data EXACTLY as Search Console shows it - only query dimension
+        // This lets the API do the aggregation correctly
         const dimensionFilters = [];
 
-        // Only add dimensions when filtering specifically
         if (country !== 'all') {
-          dimensions.push('country');
           dimensionFilters.push({
             dimension: 'country',
             operator: 'equals',
@@ -1115,7 +1113,6 @@
         }
 
         if (device !== 'all') {
-          dimensions.push('device');
           dimensionFilters.push({
             dimension: 'device',
             operator: 'equals',
@@ -1123,14 +1120,26 @@
           });
         }
 
-        currentData = await fetchSearchAnalytics(site, startDate, endDate, dimensions, dimensionFilters);
+        // Get data by QUERY only (main data)
+        currentData = await fetchSearchAnalytics(site, startDate, endDate, ['query'], dimensionFilters);
+        
+        // Get data by PAGE only (for URLs tab)
+        const urlsData = await fetchSearchAnalytics(site, startDate, endDate, ['page'], dimensionFilters);
+        
+        // Store both
+        currentData.urlsData = urlsData;
+
+        // Get data by DATE for charts
+        const dateData = await fetchSearchAnalytics(site, startDate, endDate, ['date'], dimensionFilters);
+        currentData.dateData = dateData;
 
         // Debug info
         const formatDateDebug = (date) => date.toISOString().split('T')[0];
         let debugHTML = `
           <strong>📅 Período consultado:</strong> ${formatDateDebug(startDate)} → ${formatDateDebug(endDate)} (${daysDiff} días)<br>
-          <strong>📊 Datos obtenidos:</strong> ${currentData.rows ? currentData.rows.length.toLocaleString() : 0} filas<br>
-          <strong>🔍 Dimensiones usadas:</strong> ${dimensions.join(', ')}<br>
+          <strong>📊 Keywords obtenidas:</strong> ${currentData.rows ? currentData.rows.length.toLocaleString() : 0} filas<br>
+          <strong>🌐 URLs obtenidas:</strong> ${urlsData.rows ? urlsData.rows.length.toLocaleString() : 0} filas<br>
+          <strong>🔍 Agregación:</strong> Solo por query (igual que Search Console)<br>
           <strong>🎯 Filtros activos:</strong> ${dimensionFilters.length > 0 ? dimensionFilters.map(f => `${f.dimension}=${f.expression}`).join(', ') : 'Ninguno'}
         `;
 
@@ -1146,14 +1155,18 @@
           const prevStartDate = new Date(prevEndDate);
           prevStartDate.setDate(prevStartDate.getDate() - daysDiff);
           
-          previousData = await fetchSearchAnalytics(site, prevStartDate, prevEndDate, ['query', 'page'], dimensionFilters);
+          previousData = await fetchSearchAnalytics(site, prevStartDate, prevEndDate, ['query'], dimensionFilters);
+          const prevUrlsData = await fetchSearchAnalytics(site, prevStartDate, prevEndDate, ['page'], dimensionFilters);
+          previousData.urlsData = prevUrlsData;
         } else if (compare === 'year') {
           const yearAgoEndDate = new Date(endDate);
           yearAgoEndDate.setFullYear(yearAgoEndDate.getFullYear() - 1);
           const yearAgoStartDate = new Date(startDate);
           yearAgoStartDate.setFullYear(yearAgoStartDate.getFullYear() - 1);
           
-          previousData = await fetchSearchAnalytics(site, yearAgoStartDate, yearAgoEndDate, ['query', 'page'], dimensionFilters);
+          previousData = await fetchSearchAnalytics(site, yearAgoStartDate, yearAgoEndDate, ['query'], dimensionFilters);
+          const prevUrlsData = await fetchSearchAnalytics(site, yearAgoStartDate, yearAgoEndDate, ['page'], dimensionFilters);
+          previousData.urlsData = prevUrlsData;
         } else {
           previousData = null;
         }
@@ -1269,10 +1282,10 @@
         return;
       }
 
-      // Process data
-      const { queries, urls } = processAllData(currentData.rows);
+      // Process data (now with separate query and URL data)
+      const { queries, urls } = processAllData(currentData);
       const prevQueries = previousData ? processQueries(previousData.rows) : {};
-      const prevURLs = previousData ? processURLs(previousData.rows) : {};
+      const prevURLs = previousData && previousData.urlsData ? processURLs(previousData.urlsData.rows) : {};
 
       allData = { queries, urls };
 
@@ -1295,58 +1308,48 @@
       updateURLsTab(urls, prevURLs);
       updatePositionsTab(queries);
       updateOpportunitiesTab(queries);
-      updateCharts(currentData.rows);
+      
+      // Update charts with date data
+      if (currentData.dateData && currentData.dateData.rows) {
+        updateCharts(currentData.dateData.rows, queries);
+      }
 
       document.getElementById('stats').classList.remove('hidden');
     }
 
-    function processAllData(rows) {
+    function processAllData(data) {
       const queries = {};
       const urls = {};
 
-      rows.forEach(row => {
-        const query = row.keys[0];
-        const page = row.keys[1];
-
-        // Process queries
-        if (!queries[query]) {
+      // Process queries (already aggregated by API)
+      if (data.rows) {
+        data.rows.forEach(row => {
+          const query = row.keys[0];
           queries[query] = {
             query: query,
-            clicks: 0,
-            impressions: 0,
-            pages: new Set()
+            clicks: row.clicks,
+            impressions: row.impressions,
+            ctr: row.ctr * 100,
+            position: row.position,
+            pages: new Set() // We don't have page data in this query
           };
-        }
-        queries[query].clicks += row.clicks;
-        queries[query].impressions += row.impressions;
-        queries[query].pages.add(page);
+        });
+      }
 
-        // Process URLs
-        if (!urls[page]) {
-          urls[page] = {
-            url: page,
-            clicks: 0,
-            impressions: 0,
-            queries: new Set()
+      // Process URLs (from separate URL data)
+      if (data.urlsData && data.urlsData.rows) {
+        data.urlsData.rows.forEach(row => {
+          const url = row.keys[0];
+          urls[url] = {
+            url: url,
+            clicks: row.clicks,
+            impressions: row.impressions,
+            ctr: row.ctr * 100,
+            position: row.position,
+            queries: new Set() // We don't have query data in this URL request
           };
-        }
-        urls[page].clicks += row.clicks;
-        urls[page].impressions += row.impressions;
-        urls[page].queries.add(query);
-      });
-
-      // Calculate CTR and position
-      Object.values(queries).forEach(q => {
-        q.ctr = q.clicks / q.impressions * 100;
-        const queryRows = rows.filter(r => r.keys[0] === q.query);
-        q.position = queryRows.reduce((sum, r) => sum + r.position, 0) / queryRows.length;
-      });
-
-      Object.values(urls).forEach(u => {
-        u.ctr = u.clicks / u.impressions * 100;
-        const urlRows = rows.filter(r => r.keys[1] === u.url);
-        u.position = urlRows.reduce((sum, r) => sum + r.position, 0) / urlRows.length;
-      });
+        });
+      }
 
       return { queries, urls };
     }
@@ -1381,20 +1384,14 @@
       const byURL = {};
       
       rows.forEach(row => {
-        const url = row.keys[1];
-        if (!byURL[url]) {
-          byURL[url] = {
-            url: url,
-            clicks: 0,
-            impressions: 0
-          };
-        }
-        byURL[url].clicks += row.clicks;
-        byURL[url].impressions += row.impressions;
-      });
-
-      Object.values(byURL).forEach(u => {
-        u.ctr = u.clicks / u.impressions * 100;
+        const url = row.keys[0];
+        byURL[url] = {
+          url: url,
+          clicks: row.clicks,
+          impressions: row.impressions,
+          ctr: row.ctr * 100,
+          position: row.position
+        };
       });
 
       return byURL;
@@ -1787,16 +1784,18 @@
       updateURLsTab(filtered, prevURLs);
     }
 
-    function updateCharts(rows) {
+    function updateCharts(dateRows, queries) {
+      // Evolution chart by date
       const byDate = {};
-      rows.forEach(row => {
-        if (row.keys[2]) {
-          const date = row.keys[2];
-          if (!byDate[date]) byDate[date] = { clicks: 0, impressions: 0 };
-          byDate[date].clicks += row.clicks;
-          byDate[date].impressions += row.impressions;
-        }
-      });
+      if (dateRows) {
+        dateRows.forEach(row => {
+          const date = row.keys[0];
+          byDate[date] = {
+            clicks: row.clicks,
+            impressions: row.impressions
+          };
+        });
+      }
 
       const dates = Object.keys(byDate).sort();
       const clicksData = dates.map(d => byDate[d].clicks);
@@ -1850,12 +1849,13 @@
         });
       }
 
+      // CTR by position - use queries data
       const byPosition = {};
-      rows.forEach(row => {
-        const pos = Math.floor(row.position);
+      Object.values(queries).forEach(q => {
+        const pos = Math.floor(q.position);
         if (!byPosition[pos]) byPosition[pos] = { clicks: 0, impressions: 0 };
-        byPosition[pos].clicks += row.clicks;
-        byPosition[pos].impressions += row.impressions;
+        byPosition[pos].clicks += q.clicks;
+        byPosition[pos].impressions += q.impressions;
       });
 
       const positions = Object.keys(byPosition).sort((a, b) => a - b).slice(0, 20);
