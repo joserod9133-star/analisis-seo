@@ -1922,14 +1922,113 @@
           'Clics': q.clicks,
           'Impresiones': q.impressions,
           'CTR': q.ctr.toFixed(2) + '%',
-          'Posición': q.position.toFixed(2),
-          'URLs': q.pages.size
+          'Posición': q.position.toFixed(2)
         }));
       
       const ws1 = XLSX.utils.json_to_sheet(keywordsData);
       XLSX.utils.book_append_sheet(wb, ws1, 'Keywords');
 
-      // Sheet 2: URLs
+      // Sheet 2: Keywords Ganadas/Perdidas
+      if (previousData && Object.keys(previousData).length > 0) {
+        const prevQueries = processQueries(previousData.rows);
+        const currentKeys = new Set(Object.keys(allData.queries));
+        const previousKeys = new Set(Object.keys(prevQueries));
+        
+        // Ganadas
+        const gained = [];
+        currentKeys.forEach(key => {
+          if (!previousKeys.has(key)) {
+            gained.push(allData.queries[key]);
+          }
+        });
+
+        // Perdidas
+        const lost = [];
+        previousKeys.forEach(key => {
+          if (!currentKeys.has(key)) {
+            lost.push(prevQueries[key]);
+          }
+        });
+
+        const gainedData = gained.sort((a, b) => b.clicks - a.clicks).map(q => ({
+          'Query': q.query,
+          'Clics': q.clicks,
+          'Impresiones': q.impressions,
+          'CTR': q.ctr.toFixed(2) + '%',
+          'Posición': q.position.toFixed(2),
+          'Estado': 'GANADA'
+        }));
+
+        const lostData = lost.sort((a, b) => b.clicks - a.clicks).map(q => ({
+          'Query': q.query,
+          'Clics (antes)': q.clicks,
+          'Impresiones (antes)': q.impressions,
+          'CTR (antes)': q.ctr.toFixed(2) + '%',
+          'Posición (antes)': q.position.toFixed(2),
+          'Estado': 'PERDIDA'
+        }));
+
+        const ws2 = XLSX.utils.json_to_sheet([...gainedData, ...lostData]);
+        XLSX.utils.book_append_sheet(wb, ws2, 'Ganadas-Perdidas');
+      }
+
+      // Sheet 3: Por Posición
+      const ranges = {
+        '1-3': { queries: [], clicks: 0 },
+        '4-10': { queries: [], clicks: 0 },
+        '11-20': { queries: [], clicks: 0 },
+        '21+': { queries: [], clicks: 0 }
+      };
+
+      Object.values(allData.queries).forEach(q => {
+        if (q.position <= 3) ranges['1-3'].queries.push(q);
+        else if (q.position <= 10) ranges['4-10'].queries.push(q);
+        else if (q.position <= 20) ranges['11-20'].queries.push(q);
+        else ranges['21+'].queries.push(q);
+      });
+
+      const positionData = [];
+      Object.entries(ranges).forEach(([range, data]) => {
+        data.queries.sort((a, b) => b.clicks - a.clicks).slice(0, 50).forEach(q => {
+          positionData.push({
+            'Rango': range,
+            'Query': q.query,
+            'Clics': q.clicks,
+            'Impresiones': q.impressions,
+            'CTR': q.ctr.toFixed(2) + '%',
+            'Posición': q.position.toFixed(2)
+          });
+        });
+      });
+
+      const ws3 = XLSX.utils.json_to_sheet(positionData);
+      XLSX.utils.book_append_sheet(wb, ws3, 'Por Posición');
+
+      // Sheet 4: Oportunidades (Low Hanging Fruit)
+      const opportunities = Object.values(allData.queries)
+        .filter(q => q.position >= 4 && q.position <= 10 && q.impressions > 50)
+        .sort((a, b) => b.impressions - a.impressions)
+        .slice(0, 100)
+        .map(q => {
+          const potentialCTR = estimateCTRForPosition(3);
+          const potentialClicks = Math.round(q.impressions * potentialCTR / 100);
+          const gain = potentialClicks - q.clicks;
+          
+          return {
+            'Query': q.query,
+            'Posición Actual': q.position.toFixed(1),
+            'Clics Actuales': q.clicks,
+            'Impresiones': q.impressions,
+            'CTR Actual': q.ctr.toFixed(2) + '%',
+            'Potencial Top 3': potentialClicks,
+            'Ganancia': gain
+          };
+        });
+
+      const ws4 = XLSX.utils.json_to_sheet(opportunities);
+      XLSX.utils.book_append_sheet(wb, ws4, 'Oportunidades');
+
+      // Sheet 5: URLs
       const urlsData = Object.values(allData.urls)
         .sort((a, b) => b.clicks - a.clicks)
         .map(u => ({
@@ -1937,29 +2036,14 @@
           'Clics': u.clicks,
           'Impresiones': u.impressions,
           'CTR': u.ctr.toFixed(2) + '%',
-          'Posición': u.position.toFixed(2),
-          'Keywords': u.queries.size
+          'Posición': u.position.toFixed(2)
         }));
       
-      const ws2 = XLSX.utils.json_to_sheet(urlsData);
-      XLSX.utils.book_append_sheet(wb, ws2, 'URLs');
-
-      // Sheet 3: Raw data
-      const rawData = currentData.rows.map(row => ({
-        'Query': row.keys[0],
-        'URL': row.keys[1] || '',
-        'Fecha': row.keys[2] || '',
-        'Clics': row.clicks,
-        'Impresiones': row.impressions,
-        'CTR': (row.ctr * 100).toFixed(2) + '%',
-        'Posición': row.position.toFixed(2)
-      }));
-      
-      const ws3 = XLSX.utils.json_to_sheet(rawData);
-      XLSX.utils.book_append_sheet(wb, ws3, 'Datos Completos');
+      const ws5 = XLSX.utils.json_to_sheet(urlsData);
+      XLSX.utils.book_append_sheet(wb, ws5, 'URLs');
 
       const site = document.getElementById('siteSelect').value.replace('sc-domain:', '').replace('https://', '').replace('http://', '');
-      XLSX.writeFile(wb, `search-console-${site}-${new Date().toISOString().split('T')[0]}.xlsx`);
+      XLSX.writeFile(wb, `search-console-COMPLETO-${site}-${new Date().toISOString().split('T')[0]}.xlsx`);
     }
 
     async function generatePDF() {
@@ -1974,7 +2058,7 @@
       // Header
       doc.setFontSize(20);
       doc.setTextColor(6, 182, 212);
-      doc.text('Search Console Analytics', 14, 20);
+      doc.text('Search Console Analytics - Reporte Completo', 14, 20);
       
       doc.setFontSize(10);
       doc.setTextColor(100);
@@ -2030,6 +2114,110 @@
         styles: { fontSize: 8 }
       });
 
+      // Keywords Ganadas/Perdidas (if comparison is active)
+      if (previousData && Object.keys(previousData).length > 0) {
+        const prevQueries = processQueries(previousData.rows);
+        const currentKeys = new Set(Object.keys(allData.queries));
+        const previousKeys = new Set(Object.keys(prevQueries));
+        
+        // Ganadas
+        const gained = [];
+        currentKeys.forEach(key => {
+          if (!previousKeys.has(key)) {
+            gained.push(allData.queries[key]);
+          }
+        });
+
+        // Perdidas
+        const lost = [];
+        previousKeys.forEach(key => {
+          if (!currentKeys.has(key)) {
+            lost.push(prevQueries[key]);
+          }
+        });
+
+        // Top 15 Ganadas
+        doc.addPage();
+        doc.setFontSize(14);
+        doc.setTextColor(34, 197, 94);
+        doc.text(`Keywords Ganadas (${gained.length} nuevas)`, 14, 20);
+
+        const gainedData = gained.sort((a, b) => b.clicks - a.clicks).slice(0, 15).map(q => [
+          q.query.substring(0, 40),
+          q.clicks.toLocaleString(),
+          q.impressions.toLocaleString(),
+          q.ctr.toFixed(2) + '%'
+        ]);
+
+        doc.autoTable({
+          startY: 25,
+          head: [['Keyword', 'Clics', 'Impresiones', 'CTR']],
+          body: gainedData.length > 0 ? gainedData : [['No hay keywords nuevas', '', '', '']],
+          theme: 'striped',
+          headStyles: { fillColor: [34, 197, 94] },
+          styles: { fontSize: 8 }
+        });
+
+        // Top 15 Perdidas
+        doc.setFontSize(14);
+        doc.setTextColor(239, 68, 68);
+        const startY = doc.previousAutoTable.finalY + 15;
+        doc.text(`Keywords Perdidas (${lost.length} eliminadas)`, 14, startY);
+
+        const lostData = lost.sort((a, b) => b.clicks - a.clicks).slice(0, 15).map(q => [
+          q.query.substring(0, 40),
+          q.clicks.toLocaleString(),
+          q.impressions.toLocaleString(),
+          q.ctr.toFixed(2) + '%'
+        ]);
+
+        doc.autoTable({
+          startY: startY + 5,
+          head: [['Keyword (antes)', 'Clics', 'Impresiones', 'CTR']],
+          body: lostData.length > 0 ? lostData : [['No se perdieron keywords', '', '', '']],
+          theme: 'striped',
+          headStyles: { fillColor: [239, 68, 68] },
+          styles: { fontSize: 8 }
+        });
+      }
+
+      // Análisis por Posición
+      doc.addPage();
+      doc.setFontSize(14);
+      doc.setTextColor(0);
+      doc.text('Análisis por Rango de Posición', 14, 20);
+
+      const ranges = {
+        '1-3': [],
+        '4-10': [],
+        '11-20': [],
+        '21+': []
+      };
+
+      Object.values(allData.queries).forEach(q => {
+        if (q.position <= 3) ranges['1-3'].push(q);
+        else if (q.position <= 10) ranges['4-10'].push(q);
+        else if (q.position <= 20) ranges['11-20'].push(q);
+        else ranges['21+'].push(q);
+      });
+
+      const positionSummary = Object.entries(ranges).map(([range, queries]) => {
+        const clicks = queries.reduce((sum, q) => sum + q.clicks, 0);
+        return [
+          range,
+          queries.length.toLocaleString(),
+          clicks.toLocaleString()
+        ];
+      });
+
+      doc.autoTable({
+        startY: 25,
+        head: [['Rango', 'Keywords', 'Clics']],
+        body: positionSummary,
+        theme: 'grid',
+        headStyles: { fillColor: [6, 182, 212] }
+      });
+
       // Top 20 URLs
       doc.addPage();
       doc.setFontSize(14);
@@ -2072,7 +2260,7 @@
             q.query.substring(0, 40),
             q.position.toFixed(1),
             q.impressions.toLocaleString(),
-            '+' + additionalClicks
+            '+' + additionalClicks.toLocaleString()
           ];
         });
 
@@ -2087,7 +2275,7 @@
 
       // Save
       const siteName = site.replace('sc-domain:', '').replace('https://', '').replace('http://', '');
-      doc.save(`reporte-seo-${siteName}-${new Date().toISOString().split('T')[0]}.pdf`);
+      doc.save(`reporte-SEO-COMPLETO-${siteName}-${new Date().toISOString().split('T')[0]}.pdf`);
     }
 
     function showMessage(elementId, message, type) {
