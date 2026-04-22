@@ -1086,12 +1086,14 @@
           startDate.setDate(startDate.getDate() - days);
         }
 
-        // Build dimensions
-        const dimensions = ['query', 'page', 'date'];
+        // Calculate days for comparison FIRST
+        const daysDiff = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24));
+
+        // ALWAYS include country and device dimensions for accurate data
+        const dimensions = ['query', 'page', 'date', 'country', 'device'];
         const dimensionFilters = [];
 
         if (country !== 'all') {
-          dimensions.push('country');
           dimensionFilters.push({
             dimension: 'country',
             operator: 'equals',
@@ -1100,16 +1102,12 @@
         }
 
         if (device !== 'all') {
-          dimensions.push('device');
           dimensionFilters.push({
             dimension: 'device',
             operator: 'equals',
             expression: device
           });
         }
-
-        // Calculate days for comparison FIRST
-        const daysDiff = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24));
 
         currentData = await fetchSearchAnalytics(site, startDate, endDate, dimensions, dimensionFilters);
 
