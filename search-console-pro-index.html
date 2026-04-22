@@ -1108,6 +1108,9 @@
           });
         }
 
+        // Calculate days for comparison FIRST
+        const daysDiff = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24));
+
         currentData = await fetchSearchAnalytics(site, startDate, endDate, dimensions, dimensionFilters);
 
         // Debug info
@@ -1122,9 +1125,6 @@
         if (country === 'all') {
           await loadCountries(site, startDate, endDate);
         }
-
-        // Calculate days for comparison
-        const daysDiff = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24));
 
         // Previous period for comparison
         if (compare === 'previous') {
