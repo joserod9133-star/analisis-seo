@@ -3,9 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Search Console Analytics PRO</title>
+  <title>Search Console Analytics PRO - Ultimate</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
   <style>
     * {
       margin: 0;
@@ -22,7 +24,7 @@
     }
 
     .container {
-      max-width: 1600px;
+      max-width: 1800px;
       margin: 0 auto;
     }
 
@@ -138,6 +140,11 @@
       box-shadow: 0 6px 20px rgba(34, 197, 94, 0.3);
     }
 
+    .btn-warning {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.3);
+    }
+
     .btn-group {
       display: flex;
       gap: 1rem;
@@ -243,6 +250,7 @@
       margin-bottom: 1.5rem;
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       padding-bottom: 0.5rem;
+      flex-wrap: wrap;
     }
 
     .tab {
@@ -270,6 +278,8 @@
     .table-container {
       overflow-x: auto;
       margin-top: 1rem;
+      max-height: 600px;
+      overflow-y: auto;
     }
 
     table {
@@ -289,6 +299,11 @@
       font-size: 0.85rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      position: sticky;
+      top: 0;
+      background: rgba(26, 31, 53, 0.95);
+      backdrop-filter: blur(10px);
+      z-index: 10;
     }
 
     td {
@@ -318,24 +333,37 @@
       font-weight: 600;
     }
 
-    .badge-new {
-      background: linear-gradient(135deg, #22c55e 0%, #10b981 100%);
-      color: white;
-      padding: 0.25rem 0.5rem;
-      border-radius: 4px;
-      font-size: 0.7rem;
-      font-weight: 600;
-      text-transform: uppercase;
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 1.5rem;
     }
 
-    .badge-lost {
-      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-      color: white;
-      padding: 0.25rem 0.5rem;
-      border-radius: 4px;
-      font-size: 0.7rem;
-      font-weight: 600;
-      text-transform: uppercase;
+    .pagination button {
+      padding: 0.5rem 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      color: #f8fafc;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .pagination button:hover:not(:disabled) {
+      background: rgba(6, 182, 212, 0.2);
+      border-color: #06b6d4;
+    }
+
+    .pagination button:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .pagination span {
+      color: #94a3b8;
+      font-size: 0.9rem;
     }
 
     .hidden {
@@ -381,7 +409,7 @@
 
     .controls-row {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 1rem;
       margin-bottom: 1.5rem;
     }
@@ -441,54 +469,44 @@
       color: #67e8f9;
     }
 
-    .potential-value {
-      background: rgba(34, 197, 94, 0.1);
-      border: 1px solid rgba(34, 197, 94, 0.3);
-      padding: 0.5rem 0.75rem;
-      border-radius: 6px;
+    .filter-badge {
       display: inline-block;
-      margin-top: 0.5rem;
+      padding: 0.25rem 0.75rem;
+      background: rgba(6, 182, 212, 0.2);
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      border-radius: 20px;
+      font-size: 0.8rem;
+      margin-right: 0.5rem;
+      margin-bottom: 0.5rem;
     }
 
-    .cannibalization-group {
-      background: rgba(239, 68, 68, 0.1);
-      border: 1px solid rgba(239, 68, 68, 0.2);
-      padding: 1rem;
-      border-radius: 8px;
+    .search-box {
       margin-bottom: 1rem;
     }
 
-    .url-list {
-      margin-top: 0.75rem;
-      padding-left: 1rem;
+    .search-box input {
+      width: 100%;
+      max-width: 400px;
+      padding: 0.75rem 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      color: #f8fafc;
+      font-size: 0.9rem;
     }
 
-    .url-item {
-      padding: 0.5rem 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      font-size: 0.85rem;
-    }
-
-    .progress-bar {
-      height: 6px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 3px;
-      overflow: hidden;
-      margin-top: 0.5rem;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #06b6d4, #3b82f6);
-      transition: width 0.3s;
+    .search-box input::placeholder {
+      color: #64748b;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <h1>🚀 Search Console Analytics PRO <span class="badge">PROFESSIONAL</span></h1>
-      <p style="color: #94a3b8; font-size: 0.95rem;">Análisis avanzado de SEO con comparaciones, detección de oportunidades y reportes ejecutivos</p>
+      <h1>🚀 Search Console Analytics PRO <span class="badge">ULTIMATE</span></h1>
+      <p style="color: #94a3b8; font-size: 0.95rem;">
+        Análisis completo de SEO • Sin límites • Reportes PDF • Filtros avanzados
+      </p>
     </div>
 
     <!-- Setup Section -->
@@ -498,8 +516,8 @@
       <div class="alert alert-info">
         <span>ℹ️</span>
         <div>
-          <strong>Múltiples cuentas:</strong> Puedes conectar cualquier cuenta de Google (personal o trabajo). 
-          Para cambiar de cuenta, desconecta y vuelve a conectar con otra.
+          <strong>Múltiples cuentas:</strong> Puedes conectar cualquier cuenta de Google (personal, trabajo, clientes). 
+          Para cambiar de cuenta, simplemente desconecta y vuelve a conectar.
         </div>
       </div>
 
@@ -538,27 +556,49 @@
             <select id="siteSelect" onchange="loadData()"></select>
           </div>
           <div>
-            <label style="display: block; margin-bottom: 0.5rem; font-size: 0.85rem; color: #cbd5e1;">Período actual</label>
+            <label style="display: block; margin-bottom: 0.5rem; font-size: 0.85rem; color: #cbd5e1;">Período</label>
             <select id="dateRange" onchange="loadData()">
               <option value="7">Últimos 7 días</option>
               <option value="30" selected>Últimos 30 días</option>
               <option value="90">Últimos 90 días</option>
+              <option value="180">Últimos 6 meses</option>
+              <option value="365">Últimos 12 meses</option>
+              <option value="480">Últimos 16 meses</option>
             </select>
           </div>
           <div>
             <label style="display: block; margin-bottom: 0.5rem; font-size: 0.85rem; color: #cbd5e1;">Comparar con</label>
             <select id="compareRange">
               <option value="previous">Período anterior</option>
+              <option value="year">Año anterior</option>
               <option value="none">Sin comparación</option>
+            </select>
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 0.5rem; font-size: 0.85rem; color: #cbd5e1;">País</label>
+            <select id="countryFilter" onchange="loadData()">
+              <option value="all">Todos los países</option>
+            </select>
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 0.5rem; font-size: 0.85rem; color: #cbd5e1;">Dispositivo</label>
+            <select id="deviceFilter" onchange="loadData()">
+              <option value="all">Todos</option>
+              <option value="MOBILE">Móvil</option>
+              <option value="DESKTOP">Desktop</option>
+              <option value="TABLET">Tablet</option>
             </select>
           </div>
           <div style="display: flex; align-items: flex-end;">
             <button class="btn" onclick="loadData()" style="width: 100%;">🔄 Actualizar</button>
           </div>
         </div>
+
+        <div id="activeFilters" style="margin-top: 1rem;"></div>
+
         <div class="btn-group" style="margin-top: 1rem;">
-          <button class="btn btn-success" onclick="exportToExcel()">📊 Exportar a Excel</button>
-          <button class="btn btn-secondary" onclick="exportReport()">📄 Generar Reporte</button>
+          <button class="btn btn-success" onclick="exportToExcel()">📊 Exportar Excel</button>
+          <button class="btn btn-warning" onclick="generatePDF()">📄 Generar PDF</button>
         </div>
       </div>
 
@@ -599,9 +639,8 @@
           <div class="tabs">
             <button class="tab active" onclick="switchTab('overview')">📊 General</button>
             <button class="tab" onclick="switchTab('keywords')">🔍 Keywords</button>
+            <button class="tab" onclick="switchTab('urls')">🌐 URLs</button>
             <button class="tab" onclick="switchTab('opportunities')">💎 Oportunidades</button>
-            <button class="tab" onclick="switchTab('cannibalization')">⚠️ Canibalización</button>
-            <button class="tab" onclick="switchTab('evolution')">📈 Evolución</button>
           </div>
 
           <!-- Overview Tab -->
@@ -624,25 +663,10 @@
 
           <!-- Keywords Tab -->
           <div id="tab-keywords" class="hidden">
-            <div class="alert alert-info">
-              <span>💡</span>
-              <div>
-                <strong>Keywords ganadas/perdidas:</strong> Comparamos el período actual vs anterior para identificar cambios.
-              </div>
+            <div class="search-box">
+              <input type="text" id="keywordSearch" placeholder="🔍 Buscar keyword..." onkeyup="filterKeywords()">
             </div>
 
-            <div class="grid-2">
-              <div>
-                <h3 style="margin-bottom: 1rem; font-size: 1.1rem; color: #22c55e;">✅ Keywords Ganadas</h3>
-                <div id="keywordsGained">Cargando...</div>
-              </div>
-              <div>
-                <h3 style="margin-bottom: 1rem; font-size: 1.1rem; color: #ef4444;">❌ Keywords Perdidas</h3>
-                <div id="keywordsLost">Cargando...</div>
-              </div>
-            </div>
-
-            <h3 style="margin: 2rem 0 1rem; font-size: 1.1rem;">📈 Top Keywords con Cambios</h3>
             <div class="table-container">
               <table id="keywordsTable">
                 <thead>
@@ -650,73 +674,69 @@
                     <th>Keyword</th>
                     <th>Clics</th>
                     <th>Cambio</th>
+                    <th>Impresiones</th>
+                    <th>CTR</th>
                     <th>Posición</th>
                     <th>Cambio Pos</th>
-                    <th>CTR</th>
                   </tr>
                 </thead>
                 <tbody id="keywordsTableBody"></tbody>
               </table>
             </div>
+
+            <div class="pagination" id="keywordsPagination"></div>
+          </div>
+
+          <!-- URLs Tab -->
+          <div id="tab-urls" class="hidden">
+            <div class="search-box">
+              <input type="text" id="urlSearch" placeholder="🔍 Buscar URL..." onkeyup="filterURLs()">
+            </div>
+
+            <div class="table-container">
+              <table id="urlsTable">
+                <thead>
+                  <tr>
+                    <th>URL</th>
+                    <th>Clics</th>
+                    <th>Cambio</th>
+                    <th>Impresiones</th>
+                    <th>CTR</th>
+                    <th>Posición</th>
+                  </tr>
+                </thead>
+                <tbody id="urlsTableBody"></tbody>
+              </table>
+            </div>
+
+            <div class="pagination" id="urlsPagination"></div>
           </div>
 
           <!-- Opportunities Tab -->
           <div id="tab-opportunities" class="hidden">
-            <h3 style="margin-bottom: 1.5rem; font-size: 1.2rem;">💎 URLs con Mayor Potencial</h3>
+            <h3 style="margin-bottom: 1.5rem; font-size: 1.2rem;">💎 Keywords con Mayor Potencial</h3>
             
             <div class="alert alert-warning">
               <span>⚡</span>
               <div>
-                <strong>Potencial estimado:</strong> Calculamos cuántos clics adicionales podrías obtener si optimizas estas páginas.
+                <strong>Potencial estimado:</strong> Calculamos cuántos clics adicionales podrías obtener optimizando estas keywords.
               </div>
             </div>
 
-            <div id="opportunitiesContainer"></div>
-
-            <h3 style="margin: 2rem 0 1.5rem; font-size: 1.2rem;">🎯 Low Hanging Fruit (Posición 4-10)</h3>
             <div class="table-container">
               <table>
                 <thead>
                   <tr>
                     <th>Keyword</th>
-                    <th>URL</th>
-                    <th>Posición</th>
+                    <th>Posición Actual</th>
                     <th>Impresiones</th>
+                    <th>Clics Actuales</th>
                     <th>CTR Actual</th>
-                    <th>Potencial</th>
+                    <th>Potencial (Top 3)</th>
                   </tr>
                 </thead>
-                <tbody id="lowHangingTable"></tbody>
+                <tbody id="opportunitiesTable"></tbody>
               </table>
-            </div>
-          </div>
-
-          <!-- Cannibalization Tab -->
-          <div id="tab-cannibalization" class="hidden">
-            <h3 style="margin-bottom: 1.5rem; font-size: 1.2rem;">⚠️ Detección de Canibalización</h3>
-            
-            <div class="alert alert-warning">
-              <span>🔍</span>
-              <div>
-                <strong>Canibalización detectada:</strong> Múltiples URLs compitiendo por la misma keyword. 
-                Considera consolidar contenido o usar canonical tags.
-              </div>
-            </div>
-
-            <div id="cannibalizationContainer"></div>
-          </div>
-
-          <!-- Evolution Tab -->
-          <div id="tab-evolution" class="hidden">
-            <h3 style="margin-bottom: 1.5rem; font-size: 1.2rem;">📈 Evolución Temporal Detallada</h3>
-            
-            <div class="chart-container" style="height: 400px;">
-              <canvas id="detailedEvolutionChart"></canvas>
-            </div>
-
-            <h3 style="margin: 2rem 0 1.5rem; font-size: 1.2rem;">🗺️ Mapa de Calor de Posiciones</h3>
-            <div class="chart-container" style="height: 300px;">
-              <canvas id="heatmapChart"></canvas>
             </div>
           </div>
         </div>
@@ -731,10 +751,12 @@
     let config = { clientId: '', clientSecret: '' };
     let currentData = null;
     let previousData = null;
+    let allData = { queries: [], urls: [] };
     let charts = {};
     let activeTab = 'overview';
+    let currentPage = { keywords: 1, urls: 1 };
+    const itemsPerPage = 50;
 
-    // Initialize
     window.onload = function() {
       const saved = localStorage.getItem('gsc_config');
       if (saved) {
@@ -825,6 +847,8 @@
       const site = document.getElementById('siteSelect').value;
       const days = parseInt(document.getElementById('dateRange').value);
       const compare = document.getElementById('compareRange').value;
+      const country = document.getElementById('countryFilter').value;
+      const device = document.getElementById('deviceFilter').value;
 
       if (!site) return;
 
@@ -832,12 +856,38 @@
         showLoading(true);
         document.getElementById('dashboardMessage').innerHTML = '';
 
-        // Current period
         const endDate = new Date();
         const startDate = new Date();
         startDate.setDate(startDate.getDate() - days);
 
-        currentData = await fetchSearchAnalytics(site, startDate, endDate, ['query', 'page', 'date']);
+        // Build dimensions
+        const dimensions = ['query', 'page', 'date'];
+        const dimensionFilters = [];
+
+        if (country !== 'all') {
+          dimensions.push('country');
+          dimensionFilters.push({
+            dimension: 'country',
+            operator: 'equals',
+            expression: country
+          });
+        }
+
+        if (device !== 'all') {
+          dimensions.push('device');
+          dimensionFilters.push({
+            dimension: 'device',
+            operator: 'equals',
+            expression: device
+          });
+        }
+
+        currentData = await fetchSearchAnalytics(site, startDate, endDate, dimensions, dimensionFilters);
+
+        // Load countries for filter
+        if (country === 'all') {
+          await loadCountries(site, startDate, endDate);
+        }
 
         // Previous period for comparison
         if (compare === 'previous') {
@@ -846,11 +896,19 @@
           const prevStartDate = new Date(prevEndDate);
           prevStartDate.setDate(prevStartDate.getDate() - days);
           
-          previousData = await fetchSearchAnalytics(site, prevStartDate, prevEndDate, ['query', 'page']);
+          previousData = await fetchSearchAnalytics(site, prevStartDate, prevEndDate, ['query', 'page'], dimensionFilters);
+        } else if (compare === 'year') {
+          const yearAgoEndDate = new Date(endDate);
+          yearAgoEndDate.setFullYear(yearAgoEndDate.getFullYear() - 1);
+          const yearAgoStartDate = new Date(startDate);
+          yearAgoStartDate.setFullYear(yearAgoStartDate.getFullYear() - 1);
+          
+          previousData = await fetchSearchAnalytics(site, yearAgoStartDate, yearAgoEndDate, ['query', 'page'], dimensionFilters);
         } else {
           previousData = null;
         }
 
+        updateActiveFilters(country, device);
         displayData();
       } catch (error) {
         showMessage('dashboardMessage', 'Error: ' + error.message, 'error');
@@ -859,8 +917,21 @@
       }
     }
 
-    async function fetchSearchAnalytics(site, startDate, endDate, dimensions) {
+    async function fetchSearchAnalytics(site, startDate, endDate, dimensions, dimensionFilters = []) {
       const formatDate = (date) => date.toISOString().split('T')[0];
+
+      const body = {
+        startDate: formatDate(startDate),
+        endDate: formatDate(endDate),
+        dimensions: dimensions,
+        rowLimit: 25000
+      };
+
+      if (dimensionFilters.length > 0) {
+        body.dimensionFilterGroups = [{
+          filters: dimensionFilters
+        }];
+      }
 
       const response = await fetch(
         `https://www.googleapis.com/webmasters/v3/sites/${encodeURIComponent(site)}/searchAnalytics/query`,
@@ -870,12 +941,7 @@
             'Authorization': `Bearer ${accessToken}`,
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({
-            startDate: formatDate(startDate),
-            endDate: formatDate(endDate),
-            dimensions: dimensions,
-            rowLimit: 25000
-          })
+          body: JSON.stringify(body)
         }
       );
 
@@ -887,6 +953,60 @@
       return await response.json();
     }
 
+    async function loadCountries(site, startDate, endDate) {
+      try {
+        const data = await fetchSearchAnalytics(site, startDate, endDate, ['country']);
+        const select = document.getElementById('countryFilter');
+        
+        // Keep current value
+        const currentValue = select.value;
+        
+        // Clear and rebuild
+        select.innerHTML = '<option value="all">Todos los países</option>';
+        
+        if (data.rows) {
+          const countries = {};
+          data.rows.forEach(row => {
+            const countryCode = row.keys[0];
+            if (!countries[countryCode]) {
+              countries[countryCode] = row.clicks;
+            } else {
+              countries[countryCode] += row.clicks;
+            }
+          });
+
+          // Sort by clicks
+          const sorted = Object.entries(countries).sort((a, b) => b[1] - a[1]);
+          
+          sorted.forEach(([code, clicks]) => {
+            const option = document.createElement('option');
+            option.value = code;
+            option.textContent = `${code} (${clicks.toLocaleString()} clics)`;
+            select.appendChild(option);
+          });
+        }
+
+        select.value = currentValue;
+      } catch (error) {
+        console.error('Error loading countries:', error);
+      }
+    }
+
+    function updateActiveFilters(country, device) {
+      const container = document.getElementById('activeFilters');
+      let html = '';
+
+      if (country !== 'all') {
+        html += `<span class="filter-badge">País: ${country}</span>`;
+      }
+
+      if (device !== 'all') {
+        html += `<span class="filter-badge">Dispositivo: ${device}</span>`;
+      }
+
+      container.innerHTML = html;
+    }
+
     function displayData() {
       if (!currentData || !currentData.rows) {
         showMessage('dashboardMessage', 'No hay datos para este período', 'error');
@@ -894,19 +1014,73 @@
       }
 
       // Process data
-      const queries = processQueries(currentData.rows);
+      const { queries, urls } = processAllData(currentData.rows);
       const prevQueries = previousData ? processQueries(previousData.rows) : {};
+      const prevURLs = previousData ? processURLs(previousData.rows) : {};
+
+      allData = { queries, urls };
 
       // Update stats
       updateStats(queries, prevQueries);
 
-      // Update tables and charts
+      // Update tables
       updateKeywordsTab(queries, prevQueries);
+      updateURLsTab(urls, prevURLs);
       updateOpportunitiesTab(queries);
-      updateCannibalizationTab(currentData.rows);
       updateCharts(currentData.rows);
 
       document.getElementById('stats').classList.remove('hidden');
+    }
+
+    function processAllData(rows) {
+      const queries = {};
+      const urls = {};
+
+      rows.forEach(row => {
+        const query = row.keys[0];
+        const page = row.keys[1];
+
+        // Process queries
+        if (!queries[query]) {
+          queries[query] = {
+            query: query,
+            clicks: 0,
+            impressions: 0,
+            pages: new Set()
+          };
+        }
+        queries[query].clicks += row.clicks;
+        queries[query].impressions += row.impressions;
+        queries[query].pages.add(page);
+
+        // Process URLs
+        if (!urls[page]) {
+          urls[page] = {
+            url: page,
+            clicks: 0,
+            impressions: 0,
+            queries: new Set()
+          };
+        }
+        urls[page].clicks += row.clicks;
+        urls[page].impressions += row.impressions;
+        urls[page].queries.add(query);
+      });
+
+      // Calculate CTR and position
+      Object.values(queries).forEach(q => {
+        q.ctr = q.clicks / q.impressions * 100;
+        const queryRows = rows.filter(r => r.keys[0] === q.query);
+        q.position = queryRows.reduce((sum, r) => sum + r.position, 0) / queryRows.length;
+      });
+
+      Object.values(urls).forEach(u => {
+        u.ctr = u.clicks / u.impressions * 100;
+        const urlRows = rows.filter(r => r.keys[1] === u.url);
+        u.position = urlRows.reduce((sum, r) => sum + r.position, 0) / urlRows.length;
+      });
+
+      return { queries, urls };
     }
 
     function processQueries(rows) {
@@ -918,14 +1092,11 @@
           byQuery[query] = {
             query: query,
             clicks: 0,
-            impressions: 0,
-            pages: new Set()
+            impressions: 0
           };
         }
-        
         byQuery[query].clicks += row.clicks;
         byQuery[query].impressions += row.impressions;
-        if (row.keys[1]) byQuery[query].pages.add(row.keys[1]);
       });
 
       Object.values(byQuery).forEach(q => {
@@ -936,6 +1107,29 @@
       });
 
       return byQuery;
+    }
+
+    function processURLs(rows) {
+      const byURL = {};
+      
+      rows.forEach(row => {
+        const url = row.keys[1];
+        if (!byURL[url]) {
+          byURL[url] = {
+            url: url,
+            clicks: 0,
+            impressions: 0
+          };
+        }
+        byURL[url].clicks += row.clicks;
+        byURL[url].impressions += row.impressions;
+      });
+
+      Object.values(byURL).forEach(u => {
+        u.ctr = u.clicks / u.impressions * 100;
+      });
+
+      return byURL;
     }
 
     function updateStats(current, previous) {
@@ -965,6 +1159,11 @@
         updateChange('impressionsChange', currentTotals.impressions, prevTotals.impressions);
         updateChange('ctrChange', avgCTR, prevCTR, '%');
         updateChange('positionChange', avgPosition, prevPosition, '', true);
+      } else {
+        document.getElementById('clicksChange').innerHTML = '';
+        document.getElementById('impressionsChange').innerHTML = '';
+        document.getElementById('ctrChange').innerHTML = '';
+        document.getElementById('positionChange').innerHTML = '';
       }
     }
 
@@ -974,190 +1173,158 @@
       const arrow = isPositive ? '↑' : '↓';
       const className = isPositive ? 'positive' : 'negative';
       
+      const compareType = document.getElementById('compareRange').value;
+      const compareText = compareType === 'year' ? 'vs año anterior' : 'vs período anterior';
+      
       document.getElementById(elementId).innerHTML = 
-        `<span class="${className}">${arrow} ${Math.abs(change).toFixed(1)}%</span> vs período anterior`;
+        `<span class="${className}">${arrow} ${Math.abs(change).toFixed(1)}%</span> ${compareText}`;
     }
 
-    function updateKeywordsTab(current, previous) {
-      // Keywords gained/lost
-      const currentKeys = new Set(Object.keys(current));
-      const previousKeys = new Set(Object.keys(previous));
+    function updateKeywordsTab(queries, previous) {
+      const sorted = Object.values(queries).sort((a, b) => b.clicks - a.clicks);
       
-      const gained = [...currentKeys].filter(k => !previousKeys.has(k));
-      const lost = [...previousKeys].filter(k => !currentKeys.has(k));
-
-      document.getElementById('keywordsGained').innerHTML = gained.length > 0
-        ? gained.slice(0, 10).map(k => `
-            <div style="padding: 0.75rem; background: rgba(34, 197, 94, 0.1); border-radius: 8px; margin-bottom: 0.5rem; border: 1px solid rgba(34, 197, 94, 0.2);">
-              <div style="font-weight: 500; margin-bottom: 0.25rem;">${k}</div>
-              <div style="font-size: 0.85rem; color: #94a3b8;">
-                ${current[k].clicks} clics • ${current[k].impressions.toLocaleString()} impresiones • Pos: ${current[k].position.toFixed(1)}
-              </div>
-            </div>
-          `).join('')
-        : '<p style="color: #94a3b8;">No hay keywords nuevas en este período</p>';
-
-      document.getElementById('keywordsLost').innerHTML = lost.length > 0
-        ? lost.slice(0, 10).map(k => `
-            <div style="padding: 0.75rem; background: rgba(239, 68, 68, 0.1); border-radius: 8px; margin-bottom: 0.5rem; border: 1px solid rgba(239, 68, 68, 0.2);">
-              <div style="font-weight: 500; margin-bottom: 0.25rem;">${k}</div>
-              <div style="font-size: 0.85rem; color: #94a3b8;">
-                Tenía: ${previous[k].clicks} clics • ${previous[k].impressions.toLocaleString()} impresiones
-              </div>
-            </div>
-          `).join('')
-        : '<p style="color: #94a3b8;">No se perdieron keywords en este período</p>';
-
-      // Top keywords with changes
       const tbody = document.getElementById('keywordsTableBody');
       tbody.innerHTML = '';
 
-      const sorted = Object.values(current)
-        .filter(q => previous[q.query])
-        .sort((a, b) => b.clicks - a.clicks)
-        .slice(0, 20);
+      const start = (currentPage.keywords - 1) * itemsPerPage;
+      const end = start + itemsPerPage;
+      const pageData = sorted.slice(start, end);
 
-      sorted.forEach(q => {
+      pageData.forEach(q => {
         const prev = previous[q.query];
-        const clickChange = q.clicks - prev.clicks;
-        const posChange = q.position - prev.position;
+        const clickChange = prev ? q.clicks - prev.clicks : 0;
+        const posChange = prev ? q.position - prev.position : 0;
 
         const row = tbody.insertRow();
         row.innerHTML = `
           <td class="keyword-cell">${q.query}</td>
           <td class="number-cell">${q.clicks.toLocaleString()}</td>
           <td class="number-cell ${clickChange >= 0 ? 'change-positive' : 'change-negative'}">
-            ${clickChange >= 0 ? '+' : ''}${clickChange}
+            ${prev ? (clickChange >= 0 ? '+' : '') + clickChange : '-'}
           </td>
+          <td class="number-cell">${q.impressions.toLocaleString()}</td>
+          <td class="number-cell">${q.ctr.toFixed(2)}%</td>
           <td class="number-cell">${q.position.toFixed(1)}</td>
           <td class="number-cell ${posChange <= 0 ? 'change-positive' : 'change-negative'}">
-            ${posChange > 0 ? '+' : ''}${posChange.toFixed(1)}
+            ${prev ? (posChange > 0 ? '+' : '') + posChange.toFixed(1) : '-'}
           </td>
-          <td class="number-cell">${q.ctr.toFixed(2)}%</td>
         `;
       });
+
+      updatePagination('keywords', sorted.length);
+    }
+
+    function updateURLsTab(urls, previous) {
+      const sorted = Object.values(urls).sort((a, b) => b.clicks - a.clicks);
+      
+      const tbody = document.getElementById('urlsTableBody');
+      tbody.innerHTML = '';
+
+      const start = (currentPage.urls - 1) * itemsPerPage;
+      const end = start + itemsPerPage;
+      const pageData = sorted.slice(start, end);
+
+      pageData.forEach(u => {
+        const prev = previous[u.url];
+        const clickChange = prev ? u.clicks - prev.clicks : 0;
+
+        const row = tbody.insertRow();
+        row.innerHTML = `
+          <td class="keyword-cell" style="max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${u.url}">${u.url}</td>
+          <td class="number-cell">${u.clicks.toLocaleString()}</td>
+          <td class="number-cell ${clickChange >= 0 ? 'change-positive' : 'change-negative'}">
+            ${prev ? (clickChange >= 0 ? '+' : '') + clickChange : '-'}
+          </td>
+          <td class="number-cell">${u.impressions.toLocaleString()}</td>
+          <td class="number-cell">${u.ctr.toFixed(2)}%</td>
+          <td class="number-cell">${u.position.toFixed(1)}</td>
+        `;
+      });
+
+      updatePagination('urls', sorted.length);
     }
 
     function updateOpportunitiesTab(queries) {
-      // URLs with high potential
       const opportunities = Object.values(queries)
-        .filter(q => q.position >= 4 && q.position <= 10 && q.impressions > 100)
+        .filter(q => q.position >= 4 && q.position <= 10 && q.impressions > 50)
         .sort((a, b) => b.impressions - a.impressions)
-        .slice(0, 10);
+        .slice(0, 100);
 
-      const container = document.getElementById('opportunitiesContainer');
-      container.innerHTML = opportunities.map((q, i) => {
-        const currentCTR = q.ctr;
-        const potentialCTR = estimateCTRForPosition(3); // Top 3 position
-        const potentialClicks = Math.round(q.impressions * potentialCTR / 100);
-        const additionalClicks = potentialClicks - q.clicks;
-
-        return `
-          <div style="padding: 1.5rem; background: rgba(255, 255, 255, 0.03); border-radius: 12px; margin-bottom: 1rem; border: 1px solid rgba(255, 255, 255, 0.08);">
-            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
-              <div style="flex: 1;">
-                <div style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem;">#${i+1} ${q.query}</div>
-                <div style="color: #94a3b8; font-size: 0.85rem;">
-                  Posición actual: <strong style="color: #fb923c;">${q.position.toFixed(1)}</strong> • 
-                  ${q.impressions.toLocaleString()} impresiones • 
-                  CTR: ${currentCTR.toFixed(2)}%
-                </div>
-              </div>
-              <div class="potential-value">
-                <div style="font-size: 0.75rem; color: #86efac; margin-bottom: 0.25rem;">POTENCIAL</div>
-                <div style="font-size: 1.3rem; font-weight: 700; color: #22c55e;">+${additionalClicks}</div>
-                <div style="font-size: 0.75rem; color: #86efac;">clics/mes</div>
-              </div>
-            </div>
-            <div style="font-size: 0.85rem; color: #cbd5e1; margin-bottom: 0.5rem;">
-              💡 Si subes a top 3, estimamos <strong style="color: #22c55e;">${potentialClicks} clics</strong> 
-              (CTR estimado: ${potentialCTR.toFixed(1)}%)
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill" style="width: ${(q.position / 10) * 100}%"></div>
-            </div>
-          </div>
-        `;
-      }).join('');
-
-      // Low hanging fruit table
-      const lowHanging = Object.values(queries)
-        .filter(q => q.position >= 4 && q.position <= 10)
-        .sort((a, b) => b.impressions - a.impressions)
-        .slice(0, 15);
-
-      const tbody = document.getElementById('lowHangingTable');
+      const tbody = document.getElementById('opportunitiesTable');
       tbody.innerHTML = '';
 
-      lowHanging.forEach(q => {
+      opportunities.forEach(q => {
+        const currentCTR = q.ctr;
         const potentialCTR = estimateCTRForPosition(3);
-        const potential = Math.round(q.impressions * potentialCTR / 100) - q.clicks;
+        const potentialClicks = Math.round(q.impressions * potentialCTR / 100);
+        const additionalClicks = potentialClicks - q.clicks;
 
         const row = tbody.insertRow();
         row.innerHTML = `
           <td class="keyword-cell">${q.query}</td>
-          <td style="font-size: 0.8rem; color: #94a3b8;">${[...q.pages][0] || 'N/A'}</td>
           <td class="number-cell" style="color: #fb923c;">${q.position.toFixed(1)}</td>
           <td class="number-cell">${q.impressions.toLocaleString()}</td>
-          <td class="number-cell">${q.ctr.toFixed(2)}%</td>
-          <td class="number-cell" style="color: #22c55e; font-weight: 600;">+${potential} clics</td>
+          <td class="number-cell">${q.clicks.toLocaleString()}</td>
+          <td class="number-cell">${currentCTR.toFixed(2)}%</td>
+          <td class="number-cell" style="color: #22c55e; font-weight: 600;">+${additionalClicks} clics</td>
         `;
       });
     }
 
-    function updateCannibalizationTab(rows) {
-      // Group by query
-      const byQuery = {};
-      rows.forEach(row => {
-        const query = row.keys[0];
-        const page = row.keys[1];
-        
-        if (!byQuery[query]) byQuery[query] = [];
-        byQuery[query].push({ page, clicks: row.clicks, position: row.position, impressions: row.impressions });
+    function updatePagination(type, total) {
+      const totalPages = Math.ceil(total / itemsPerPage);
+      const container = document.getElementById(`${type}Pagination`);
+      
+      container.innerHTML = `
+        <button onclick="changePage('${type}', -1)" ${currentPage[type] === 1 ? 'disabled' : ''}>← Anterior</button>
+        <span>Página ${currentPage[type]} de ${totalPages} (${total.toLocaleString()} items)</span>
+        <button onclick="changePage('${type}', 1)" ${currentPage[type] === totalPages ? 'disabled' : ''}>Siguiente →</button>
+      `;
+    }
+
+    function changePage(type, delta) {
+      currentPage[type] += delta;
+      
+      if (type === 'keywords') {
+        const prevQueries = previousData ? processQueries(previousData.rows) : {};
+        updateKeywordsTab(allData.queries, prevQueries);
+      } else if (type === 'urls') {
+        const prevURLs = previousData ? processURLs(previousData.rows) : {};
+        updateURLsTab(allData.urls, prevURLs);
+      }
+    }
+
+    function filterKeywords() {
+      const search = document.getElementById('keywordSearch').value.toLowerCase();
+      const filtered = {};
+      
+      Object.entries(allData.queries).forEach(([key, value]) => {
+        if (value.query.toLowerCase().includes(search)) {
+          filtered[key] = value;
+        }
       });
 
-      // Find cannibalization (2+ URLs for same query with significant traffic)
-      const cannibalized = Object.entries(byQuery)
-        .filter(([query, pages]) => pages.length >= 2 && pages.some(p => p.impressions > 50))
-        .sort((a, b) => b[1].reduce((sum, p) => sum + p.impressions, 0) - a[1].reduce((sum, p) => sum + p.impressions, 0))
-        .slice(0, 15);
+      currentPage.keywords = 1;
+      const prevQueries = previousData ? processQueries(previousData.rows) : {};
+      updateKeywordsTab(filtered, prevQueries);
+    }
 
-      const container = document.getElementById('cannibalizationContainer');
+    function filterURLs() {
+      const search = document.getElementById('urlSearch').value.toLowerCase();
+      const filtered = {};
       
-      if (cannibalized.length === 0) {
-        container.innerHTML = '<p style="color: #86efac;">✅ No se detectó canibalización significativa en tus keywords principales</p>';
-        return;
-      }
+      Object.entries(allData.urls).forEach(([key, value]) => {
+        if (value.url.toLowerCase().includes(search)) {
+          filtered[key] = value;
+        }
+      });
 
-      container.innerHTML = cannibalized.map(([query, pages]) => `
-        <div class="cannibalization-group">
-          <div style="font-weight: 600; font-size: 1.05rem; margin-bottom: 0.75rem; color: #fca5a5;">
-            ⚠️ "${query}"
-          </div>
-          <div style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 0.5rem;">
-            ${pages.length} URLs compitiendo • ${pages.reduce((sum, p) => sum + p.impressions, 0).toLocaleString()} impresiones totales
-          </div>
-          <div class="url-list">
-            ${pages.sort((a, b) => b.clicks - a.clicks).map((p, i) => `
-              <div class="url-item">
-                <div style="font-size: 0.9rem; margin-bottom: 0.25rem;">
-                  ${i === 0 ? '🏆' : '📄'} ${p.page}
-                </div>
-                <div style="font-size: 0.8rem; color: #94a3b8;">
-                  Pos: ${p.position.toFixed(1)} • ${p.clicks} clics • ${p.impressions.toLocaleString()} imp
-                </div>
-              </div>
-            `).join('')}
-          </div>
-          <div style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(255, 255, 255, 0.1); font-size: 0.85rem; color: #fdba74;">
-            💡 Recomendación: Consolida contenido en la URL #1 o usa canonical tags
-          </div>
-        </div>
-      `).join('');
+      currentPage.urls = 1;
+      const prevURLs = previousData ? processURLs(previousData.rows) : {};
+      updateURLsTab(filtered, prevURLs);
     }
 
     function updateCharts(rows) {
-      // Evolution chart
       const byDate = {};
       rows.forEach(row => {
         if (row.keys[2]) {
@@ -1172,10 +1339,8 @@
       const clicksData = dates.map(d => byDate[d].clicks);
       const impressionsData = dates.map(d => byDate[d].impressions);
 
-      // Destroy existing charts
       Object.values(charts).forEach(chart => chart && chart.destroy());
 
-      // Evolution Chart
       const ctx1 = document.getElementById('evolutionChart');
       if (ctx1) {
         charts.evolution = new Chart(ctx1, {
@@ -1222,7 +1387,6 @@
         });
       }
 
-      // CTR by Position Chart
       const byPosition = {};
       rows.forEach(row => {
         const pos = Math.floor(row.position);
@@ -1261,99 +1425,6 @@
           }
         });
       }
-
-      // Detailed Evolution Chart
-      const ctx3 = document.getElementById('detailedEvolutionChart');
-      if (ctx3) {
-        charts.detailed = new Chart(ctx3, {
-          type: 'line',
-          data: {
-            labels: dates,
-            datasets: [
-              {
-                label: 'Clics',
-                data: clicksData,
-                borderColor: '#06b6d4',
-                backgroundColor: 'rgba(6, 182, 212, 0.2)',
-                fill: true,
-                tension: 0.4
-              },
-              {
-                label: 'CTR (%)',
-                data: dates.map(d => (byDate[d].clicks / byDate[d].impressions * 100).toFixed(2)),
-                borderColor: '#22c55e',
-                backgroundColor: 'rgba(34, 197, 94, 0.2)',
-                fill: true,
-                tension: 0.4,
-                yAxisID: 'y1'
-              }
-            ]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            interaction: { mode: 'index', intersect: false },
-            plugins: {
-              legend: { labels: { color: '#f8fafc' } }
-            },
-            scales: {
-              x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } },
-              y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } },
-              y1: { 
-                position: 'right',
-                ticks: { color: '#94a3b8' },
-                grid: { display: false }
-              }
-            }
-          }
-        });
-      }
-
-      // Heatmap Chart (Position distribution)
-      const positionRanges = {
-        '1-3': 0, '4-10': 0, '11-20': 0, '21-50': 0, '50+': 0
-      };
-      
-      rows.forEach(row => {
-        const pos = row.position;
-        if (pos <= 3) positionRanges['1-3']++;
-        else if (pos <= 10) positionRanges['4-10']++;
-        else if (pos <= 20) positionRanges['11-20']++;
-        else if (pos <= 50) positionRanges['21-50']++;
-        else positionRanges['50+']++;
-      });
-
-      const ctx4 = document.getElementById('heatmapChart');
-      if (ctx4) {
-        charts.heatmap = new Chart(ctx4, {
-          type: 'doughnut',
-          data: {
-            labels: Object.keys(positionRanges),
-            datasets: [{
-              data: Object.values(positionRanges),
-              backgroundColor: [
-                'rgba(34, 197, 94, 0.8)',
-                'rgba(6, 182, 212, 0.8)',
-                'rgba(168, 85, 247, 0.8)',
-                'rgba(251, 146, 60, 0.8)',
-                'rgba(239, 68, 68, 0.8)'
-              ],
-              borderWidth: 2,
-              borderColor: '#1a1f35'
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: { 
-                labels: { color: '#f8fafc' },
-                position: 'bottom'
-              }
-            }
-          }
-        });
-      }
     }
 
     function estimateCTRForPosition(position) {
@@ -1382,7 +1453,37 @@
 
       const wb = XLSX.utils.book_new();
       
-      // Sheet 1: Raw data
+      // Sheet 1: Keywords
+      const keywordsData = Object.values(allData.queries)
+        .sort((a, b) => b.clicks - a.clicks)
+        .map(q => ({
+          'Query': q.query,
+          'Clics': q.clicks,
+          'Impresiones': q.impressions,
+          'CTR': q.ctr.toFixed(2) + '%',
+          'Posición': q.position.toFixed(2),
+          'URLs': q.pages.size
+        }));
+      
+      const ws1 = XLSX.utils.json_to_sheet(keywordsData);
+      XLSX.utils.book_append_sheet(wb, ws1, 'Keywords');
+
+      // Sheet 2: URLs
+      const urlsData = Object.values(allData.urls)
+        .sort((a, b) => b.clicks - a.clicks)
+        .map(u => ({
+          'URL': u.url,
+          'Clics': u.clicks,
+          'Impresiones': u.impressions,
+          'CTR': u.ctr.toFixed(2) + '%',
+          'Posición': u.position.toFixed(2),
+          'Keywords': u.queries.size
+        }));
+      
+      const ws2 = XLSX.utils.json_to_sheet(urlsData);
+      XLSX.utils.book_append_sheet(wb, ws2, 'URLs');
+
+      // Sheet 3: Raw data
       const rawData = currentData.rows.map(row => ({
         'Query': row.keys[0],
         'URL': row.keys[1] || '',
@@ -1393,29 +1494,139 @@
         'Posición': row.position.toFixed(2)
       }));
       
-      const ws1 = XLSX.utils.json_to_sheet(rawData);
-      XLSX.utils.book_append_sheet(wb, ws1, 'Datos Completos');
+      const ws3 = XLSX.utils.json_to_sheet(rawData);
+      XLSX.utils.book_append_sheet(wb, ws3, 'Datos Completos');
 
-      // Sheet 2: Summary
-      const queries = processQueries(currentData.rows);
-      const summary = Object.values(queries).map(q => ({
-        'Query': q.query,
-        'Clics': q.clicks,
-        'Impresiones': q.impressions,
-        'CTR': q.ctr.toFixed(2) + '%',
-        'Posición': q.position.toFixed(2),
-        'URLs': q.pages.size
-      }));
-      
-      const ws2 = XLSX.utils.json_to_sheet(summary);
-      XLSX.utils.book_append_sheet(wb, ws2, 'Resumen por Query');
-
-      // Download
-      XLSX.writeFile(wb, `search-console-${new Date().toISOString().split('T')[0]}.xlsx`);
+      const site = document.getElementById('siteSelect').value.replace('sc-domain:', '').replace('https://', '').replace('http://', '');
+      XLSX.writeFile(wb, `search-console-${site}-${new Date().toISOString().split('T')[0]}.xlsx`);
     }
 
-    function exportReport() {
-      alert('Función de reporte PDF en desarrollo. Por ahora usa Exportar a Excel.');
+    async function generatePDF() {
+      if (!currentData || !currentData.rows) {
+        alert('No hay datos para generar PDF');
+        return;
+      }
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      // Header
+      doc.setFontSize(20);
+      doc.setTextColor(6, 182, 212);
+      doc.text('Search Console Analytics', 14, 20);
+      
+      doc.setFontSize(10);
+      doc.setTextColor(100);
+      const site = document.getElementById('siteSelect').value;
+      const dateRange = document.getElementById('dateRange').options[document.getElementById('dateRange').selectedIndex].text;
+      doc.text(`Sitio: ${site}`, 14, 28);
+      doc.text(`Período: ${dateRange}`, 14, 34);
+      doc.text(`Fecha del reporte: ${new Date().toLocaleDateString()}`, 14, 40);
+
+      // Stats
+      doc.setFontSize(14);
+      doc.setTextColor(0);
+      doc.text('Resumen General', 14, 50);
+      
+      const stats = [
+        ['Métrica', 'Valor'],
+        ['Total Clics', document.getElementById('totalClicks').textContent],
+        ['Total Impresiones', document.getElementById('totalImpressions').textContent],
+        ['CTR Promedio', document.getElementById('avgCTR').textContent],
+        ['Posición Promedio', document.getElementById('avgPosition').textContent]
+      ];
+
+      doc.autoTable({
+        startY: 55,
+        head: [stats[0]],
+        body: stats.slice(1),
+        theme: 'grid',
+        headStyles: { fillColor: [6, 182, 212] }
+      });
+
+      // Top 20 Keywords
+      doc.addPage();
+      doc.setFontSize(14);
+      doc.text('Top 20 Keywords', 14, 20);
+
+      const keywordsData = Object.values(allData.queries)
+        .sort((a, b) => b.clicks - a.clicks)
+        .slice(0, 20)
+        .map(q => [
+          q.query.substring(0, 40),
+          q.clicks.toLocaleString(),
+          q.impressions.toLocaleString(),
+          q.ctr.toFixed(2) + '%',
+          q.position.toFixed(1)
+        ]);
+
+      doc.autoTable({
+        startY: 25,
+        head: [['Keyword', 'Clics', 'Impresiones', 'CTR', 'Posición']],
+        body: keywordsData,
+        theme: 'striped',
+        headStyles: { fillColor: [6, 182, 212] },
+        styles: { fontSize: 8 }
+      });
+
+      // Top 20 URLs
+      doc.addPage();
+      doc.setFontSize(14);
+      doc.text('Top 20 URLs', 14, 20);
+
+      const urlsData = Object.values(allData.urls)
+        .sort((a, b) => b.clicks - a.clicks)
+        .slice(0, 20)
+        .map(u => [
+          u.url.substring(0, 60),
+          u.clicks.toLocaleString(),
+          u.impressions.toLocaleString(),
+          u.ctr.toFixed(2) + '%'
+        ]);
+
+      doc.autoTable({
+        startY: 25,
+        head: [['URL', 'Clics', 'Impresiones', 'CTR']],
+        body: urlsData,
+        theme: 'striped',
+        headStyles: { fillColor: [6, 182, 212] },
+        styles: { fontSize: 7 }
+      });
+
+      // Opportunities
+      doc.addPage();
+      doc.setFontSize(14);
+      doc.text('Oportunidades (Posición 4-10)', 14, 20);
+
+      const opportunities = Object.values(allData.queries)
+        .filter(q => q.position >= 4 && q.position <= 10 && q.impressions > 50)
+        .sort((a, b) => b.impressions - a.impressions)
+        .slice(0, 20)
+        .map(q => {
+          const potentialCTR = estimateCTRForPosition(3);
+          const potentialClicks = Math.round(q.impressions * potentialCTR / 100);
+          const additionalClicks = potentialClicks - q.clicks;
+          
+          return [
+            q.query.substring(0, 40),
+            q.position.toFixed(1),
+            q.impressions.toLocaleString(),
+            '+' + additionalClicks
+          ];
+        });
+
+      doc.autoTable({
+        startY: 25,
+        head: [['Keyword', 'Posición', 'Impresiones', 'Potencial']],
+        body: opportunities,
+        theme: 'striped',
+        headStyles: { fillColor: [34, 197, 94] },
+        styles: { fontSize: 8 }
+      });
+
+      // Save
+      const siteName = site.replace('sc-domain:', '').replace('https://', '').replace('http://', '');
+      doc.save(`reporte-seo-${siteName}-${new Date().toISOString().split('T')[0]}.pdf`);
     }
 
     function showMessage(elementId, message, type) {
